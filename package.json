@@ -1,0 +1,30 @@
+{
+  "name": "real_time_chat_app",
+  "version": "1.0.0",
+  "description": "A Real Time Multi Users Chat app made using Node js, Multi Paradigm(OOP and procedural), WebSockets.",
+  "keywords": [
+    "npm",
+    "node",
+    "websocket",
+    "oop"
+  ],
+  "homepage": "https://github.com/Pranaw-Rai009/LiveChat#readme",
+  "bugs": {
+    "url": "https://github.com/Pranaw-Rai009/LiveChat/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pranaw-Rai009/LiveChat.git"
+  },
+  "license": "ISC",
+  "author": "Dhanraj Rai",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon src/server.js"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14",
+    "prettier": "^3.9.9"
+  }
+}
