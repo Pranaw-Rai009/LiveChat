@@ -10,13 +10,14 @@ startServer()
 .then(() => {
     console.log("Database Connection Successfull")
 
-    app.on("error", (error) => {
-        console.log("Error occured in connection!")
-        process.exit(1)
+    const server = app.listen(process.env.PORT, () => {
+        console.log(`The server is listening on port ${process.env.PORT}`)
     })
 
-    app.listen(process.env.PORT, () => {
-        console.log(`The server is listening on port ${process.env.PORT}`)
+    // to catch port binding error
+    server.on("error", (error) => {
+        console.error("Server Failed to start:", error)
+        process.exit(1)
     })
 })
 .catch((err) => {
