@@ -10,6 +10,7 @@ startServer()
 .then(() => {
     console.log("Database Connection Successfull")
 
+
     const server = app.listen(process.env.PORT, () => {
         console.log(`The server is listening on port ${process.env.PORT}`)
     })
@@ -17,6 +18,7 @@ startServer()
     // to catch port binding error
     server.on("error", (error) => {
         console.error("Server Failed to start:", error)
+
         process.exit(1)
     })
 })
