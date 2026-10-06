@@ -11,3 +11,61 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum userRole {
+  ADMIN
+  USER
+}
+
+model User {
+  id           Int            @id @default(autoincrement())
+  userName     String         @unique
+  email        String         @unique
+  password     String
+  profilePic   String?
+  role         userRole @default(USER)
+  createdAt    DateTime       @default(now())
+  updatedAT    DateTime       @updatedAt
+  refreshToken RefreshToken[]
+  roomMember   RoomMember[]
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Room {
+  id         Int          @id @default(autoincrement())
+  name       String       @unique
+  profilePic String?
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  roomMember RoomMember[]
+}
+
+model RoomMember {
+  id        Int       @id @default(autoincrement())
+  roomId    Int
+  room      Room      @relation(fields: [roomId], references: [id])
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  message   Message[]
+
+  @@unique([roomId, userId])
+}
+
+model Message {
+  id           Int        @id @default(autoincrement())
+  content      String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  roomMemberId Int
+  roomMember   RoomMember @relation(fields: [roomMemberId], references: [id])
+}
