@@ -3,6 +3,8 @@ import cookieparser from 'cookie-parser';
 import cors from 'cors'
 import { errroHandler } from './utils/errorHandler.util.js';
 
+import { userRouter } from './routes/user.routes.js'
+
 const app = express()
 
 app.use(express.json())
@@ -17,6 +19,10 @@ app.use(express.json({limit: "16kb"}))
 
 // testing routes
 app.get("/health", (req, res) => res.json({status: "ok"}))
+
+
+// Main Routes
+app.use("/api/user", userRouter)
 
 app.use(errroHandler)
 export default app
