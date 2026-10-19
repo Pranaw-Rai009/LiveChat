@@ -23,6 +23,6 @@ export const update = asyncHandler(async(req, res) => {
     const userId = req.user.id
     if(!req.file) throw new ApiError(400, "No Image Uploaded!")
 
-    const updatedProfilePicture = await updateProfilePicture.update(req.file)
+    const updatedProfilePicture = await updateProfilePicture.update(req.file, userId)
     req.status(200).json({message: "Profile Picture Updated", NewProfilePicture:  updatedProfilePicture})
 })
