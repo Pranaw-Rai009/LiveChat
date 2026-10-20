@@ -1,7 +1,9 @@
 import { asyncHandler } from '../utils/asyncHandler.util.js'
 import { ApiError } from '../utils/apiError.util.js'
 import {prisma} from '../db/dbConnect.js'
-import {RegisterUser, UpdateProfilePicture} from '../services/userServices/registerUser.js'
+import {RegisterUser} from '../services/userServices/registerUser.js'
+import {UpdateProfilePicture} from "../services/userServices/updateProfilePicture.js"
+import {GetAllUsers} from "../services/userServices/getAllUser.js"
 
 const registerUser  = new RegisterUser({prisma})
 
@@ -13,6 +15,7 @@ export const register = asyncHandler(async(req, res) => {
     if(!role) throw new ApiError(400, "Role is missing!")
     const userData = {userName, email, password, role}
     const user = await registerUser.register(userData)
+    if(!user) throw new ApiError(500, "User  NOT created")
     res.status(201).json({User: user})
 })
 
@@ -25,4 +28,11 @@ export const update = asyncHandler(async(req, res) => {
 
     const updatedProfilePicture = await updateProfilePicture.update(req.file, userId)
     req.status(200).json({message: "Profile Picture Updated", NewProfilePicture:  updatedProfilePicture})
+})
+
+
+
+export const getAllUser = asyncHandler(async( req, res) => {
+    const allUsersOuput = await GetAllUsers.getAllUsers()
+    res.status(201).json({AllUsers: allUsersOuput})
 })
