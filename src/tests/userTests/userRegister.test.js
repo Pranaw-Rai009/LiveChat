@@ -1,5 +1,6 @@
 import { test, expect, vi } from "vitest";
 import { RegisterUser } from "../../services/userServices/registerUser.js"; // adjust to your real path
+import { register} from "../../controllers/user.controller.js"
 
 test("register creates a USER", async () => {
   const fakePrisma = {
