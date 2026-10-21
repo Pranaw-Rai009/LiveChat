@@ -31,6 +31,7 @@ export const update = asyncHandler(async(req, res) => {
 })
 
 
+const getAllUsers = new GetAllUsers(prisma)
 
 export const getAllUser = asyncHandler(async( req, res) => {
     const allUsersOuput = await GetAllUsers.getAllUsers()
