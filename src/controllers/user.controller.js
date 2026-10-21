@@ -4,6 +4,7 @@ import {prisma} from '../db/dbConnect.js'
 import {RegisterUser} from '../services/userServices/registerUser.js'
 import {UpdateProfilePicture} from "../services/userServices/updateProfilePicture.js"
 import {GetAllUsers} from "../services/userServices/getAllUser.js"
+import {DeleteUser} from "../services/userServices/deleteUser.js"
 
 const registerUser  = new RegisterUser({prisma})
 
@@ -36,4 +37,12 @@ const getAllUsers = new GetAllUsers(prisma)
 export const getAllUser = asyncHandler(async( req, res) => {
     const allUsersOuput = await GetAllUsers.getAllUsers()
     res.status(201).json({AllUsers: allUsersOuput})
+})
+
+const deleteUser = new DeleteUser()
+
+export const deleteAccount = asyncHandler(async(req, res) => {
+    const userId = req.user.id
+    const isDeleted = await deleteUser.delete(userId)
+    res.status(200).json({message: "User Deleted"})
 })
