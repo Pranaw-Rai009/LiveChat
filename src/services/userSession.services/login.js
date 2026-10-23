@@ -2,6 +2,7 @@ import { RefreshTokenScalarFieldEnum } from "../../generated/prisma/internal/pri
 import { ApiError } from "../../utils/apiError.util.js";
 import {hashPasssword, comparePassword} from "../../utils/passwordHash.util.js"
 import {generateAccessToken, generateRefreshToken} from "../../utils/token.util.js"
+import ms from 'ms'
 
 class UserLogin {
     constructor(prisma) {
@@ -28,11 +29,17 @@ class UserLogin {
         const newRefreshToken = await generateRefreshToken(user)
         if(!newRefreshToken) throw new ApiError(500, "Error occured while generating refresh token!")
 
-        const saveRefreshToken
+        const refreshTokenExpiry = new Date(Date.now() + ms(process.env.REFRESH_TOKEN_EXPIRY))
+        if(!refreshTokenExpiry) throw new ApiError(500, "Error occured while generating refresh token epxiry date!")
 
-        
-        
-
-
+        const saveNewRefreshToken = await this.prisma.refreshToken.create({
+            data: {
+                userId: user.id,
+                token: newRefreshToken,
+                expiresAt: refreshTokenExpiry
+            }
+        })
+        if(!saveNewRefreshToken) throw new ApiError(500, "Error occured while saving refresh token!")
+            return {refreshToken, accessToken}
     }
 }
