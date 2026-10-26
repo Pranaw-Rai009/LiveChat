@@ -4,7 +4,7 @@ import {hashPasssword, comparePassword} from "../../utils/passwordHash.util.js"
 import {generateAccessToken, generateRefreshToken} from "../../utils/token.util.js"
 import ms from 'ms'
 
-class UserLogin {
+export class UserLogin {
     constructor(prisma) {
         this.prisma = prisma
     }
@@ -15,13 +15,10 @@ class UserLogin {
                 email
             }
         })
-        if(!user ) throw new ApiError(404, "Email doesn't exist!")
-        
-        const hashedPassword = await hashPasssword(password)
-        if(!hashPasssword) throw new ApiError(500, "Error occured while hashing the password!")
+        if(!user ) throw new ApiError(404, "User with this Email doesn't exist!")
 
-        const isCorrectPassword = await comparePassword(hashedPassword, user.password)
-        if(!isCorrectPassword) throw new ApiError(401, "Incorrect Password!")
+        const isCorrectPassword = await comparePassword(password, user.password)
+        if(!isCorrectPassword) throw new ApiError(404, "Incorrect Password!")
 
         const newAccessToken = await generateAccessToken(user)
         if(!newAccessToken) throw new ApiError(500, "Error occured while generating access token!")
@@ -40,6 +37,6 @@ class UserLogin {
             }
         })
         if(!saveNewRefreshToken) throw new ApiError(500, "Error occured while saving refresh token!")
-            return {refreshToken, accessToken}
+            return {newRefreshToken, newAccessToken}
     }
 }

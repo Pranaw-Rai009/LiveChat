@@ -11,7 +11,7 @@ export const login = asyncHandler(async (req, res) => {
     if (!email) throw new ApiError(400, "Email is missing!")
     if (!password) throw new ApiError(400, "Password is missing")
 
-    const loggedUser = userLogin.login(email, password)
+    const loggedUser = await userLogin.login(email, password)
     
     const { accessToken, refreshToken } = loggedUser
     res.cookie("refreshToken", refreshToken, {
