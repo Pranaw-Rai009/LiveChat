@@ -1,6 +1,6 @@
 // import { RefreshTokenScalarFieldEnum } from "../../generated/prisma/internal/prismaNamespace.js";
 import  ApiError  from "../../utils/apiError.util.js";
-import {hashPasssword, comparePassword} from "../../utils/passwordHash.util.js"
+import {comparePassword} from "../../utils/passwordHash.util.js"
 import {generateAccessToken, generateRefreshToken} from "../../utils/token.util.js"
 import ms from 'ms'
 
@@ -17,6 +17,7 @@ export class UserLogin {
         })
         if(!user ) throw new ApiError(404, "User with this Email doesn't exist!")
 
+        console.log(user)
         const isCorrectPassword = await comparePassword(password, user.password)
         if(!isCorrectPassword) throw new ApiError(404, "Incorrect Password!")
 

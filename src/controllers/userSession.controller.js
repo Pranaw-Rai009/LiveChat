@@ -13,11 +13,11 @@ export const login = asyncHandler(async (req, res) => {
 
     const loggedUser = await userLogin.login(email, password)
     
-    const { accessToken, refreshToken } = loggedUser
-    res.cookie("refreshToken", refreshToken, {
+    const { newRefreshToken, newAccessToken } = loggedUser
+    res.cookie("newRefreshToken", newRefreshToken, {
         httpOnly: true,
         secure: true
     })
 
-    res.status(200).json({ message: "User Logged In Successfully!", AccessToken: accessToken })
+    res.status(200).json({ message: "User Logged In Successfully!", AccessToken: newAccessToken })
 })
