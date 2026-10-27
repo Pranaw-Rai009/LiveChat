@@ -1,5 +1,5 @@
-import { RefreshTokenScalarFieldEnum } from "../../generated/prisma/internal/prismaNamespace.js";
-import { ApiError } from "../../utils/apiError.util.js";
+// import { RefreshTokenScalarFieldEnum } from "../../generated/prisma/internal/prismaNamespace.js";
+import  ApiError  from "../../utils/apiError.util.js";
 import {hashPasssword, comparePassword} from "../../utils/passwordHash.util.js"
 import {generateAccessToken, generateRefreshToken} from "../../utils/token.util.js"
 import ms from 'ms'

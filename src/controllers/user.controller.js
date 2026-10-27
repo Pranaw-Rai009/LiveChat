@@ -6,7 +6,7 @@ import {UpdateProfilePicture} from "../services/userServices/updateProfilePictur
 import {GetAllUsers} from "../services/userServices/getAllUser.js"
 import {DeleteUser} from "../services/userServices/deleteUser.js"
 
-const registerUser  = new RegisterUser({prisma})
+const registerUser  = new RegisterUser(prisma)
 
 export const register = asyncHandler(async(req, res) => {
     const {userName, email, password, role} = req.body

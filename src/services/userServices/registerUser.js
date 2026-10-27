@@ -8,11 +8,11 @@ export class RegisterUser {
 
     async register(userData) {
         const {userName, email, password, role} = userData
-        const usernameExist = await this.prisma.user.findUnique({ where: {userName}})
+        const usernameExist = await this.prisma.user.findFirst({ where: {userName}})
         if(usernameExist) throw new ApiError(409, "User with this username already exist!")
-        const emailExist = await this.prisma.user.findUnique({where: {email}})
+        const emailExist = await this.prisma.user.findFirst({where: {email}})
         if(emailExist) throw new ApiError(409, "User with this email already exist!")
-
+            
         const lengthOfPassword = password.length
         if(lengthOfPassword < 12) throw new ApiError(400, "Length of password must be greater than 12 character")
         

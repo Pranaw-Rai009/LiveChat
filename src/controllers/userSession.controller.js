@@ -1,5 +1,5 @@
 import { asyncHandler } from "../utils/asyncHandler.util.js";
-import { ApiError } from "../utils/apiError.util.js";
+import  ApiError  from "../utils/apiError.util.js";
 import { UserLogin } from "../services/userSession.services/login.js"
 import { prisma } from "../db/dbConnect.js";
 

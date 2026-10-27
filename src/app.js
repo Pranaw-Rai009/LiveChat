@@ -3,6 +3,7 @@ import cookieparser from 'cookie-parser';
 import cors from 'cors'
 import { errroHandler } from './utils/errorHandler.util.js';
 import userRouter  from './routes/user.routes.js'
+import userLoginRouter from './routes/userSession.routes.js'
 
 const app = express()
 
@@ -22,6 +23,7 @@ app.get("/health", (req, res) => res.json({ status: "ok" }))
 
 // Main Routes
 app.use("/api/user", userRouter)
+app.use("/api/login", userLoginRouter)
 
 app.use(errroHandler)
 export default app
