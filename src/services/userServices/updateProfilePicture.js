@@ -1,5 +1,5 @@
 import {uploadOnCloudinary} from '../../utils/cloudinary.util.js'
-import { ApiError } from '../../utils/apiError.util.js'
+import  ApiError  from '../../utils/apiError.util.js'
 
 export class UpdateProfilePicture {
     constructor(prisma) {

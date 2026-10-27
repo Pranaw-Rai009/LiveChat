@@ -1,5 +1,5 @@
 import { hash } from "bcrypt"
-import { ApiError } from "../../utils/apiError.util.js"
+import ApiError  from "../../utils/apiError.util.js"
 import { hashPasssword, comparePassword } from "../../utils/passwordHash.util.js"  
 export class RegisterUser {
     constructor(prisma) {

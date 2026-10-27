@@ -1,6 +1,6 @@
-import { ApiError } from "../../utils/apiError.util.js";
+import  ApiError  from "../../utils/apiError.util.js";
 
-class GetAllUsers {
+export class GetAllUsers {
     constructor(prisma) {
         this.prisma  = prisma
     }

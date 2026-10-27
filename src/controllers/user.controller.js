@@ -1,5 +1,5 @@
 import { asyncHandler } from '../utils/asyncHandler.util.js'
-import { ApiError } from '../utils/apiError.util.js'
+import  ApiError  from '../utils/apiError.util.js'
 import {prisma} from '../db/dbConnect.js'
 import {RegisterUser} from '../services/userServices/registerUser.js'
 import {UpdateProfilePicture} from "../services/userServices/updateProfilePicture.js"
