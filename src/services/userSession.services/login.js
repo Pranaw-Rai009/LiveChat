@@ -17,7 +17,6 @@ export class UserLogin {
         })
         if(!user ) throw new ApiError(404, "User with this Email doesn't exist!")
 
-        console.log(user)
         const isCorrectPassword = await comparePassword(password, user.password)
         if(!isCorrectPassword) throw new ApiError(404, "Incorrect Password!")
 
