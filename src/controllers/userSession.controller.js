@@ -1,7 +1,8 @@
 import { asyncHandler } from "../utils/asyncHandler.util.js";
 import  ApiError  from "../utils/apiError.util.js";
-import { UserLogin } from "../services/userSession.services/login.js"
 import { prisma } from "../db/dbConnect.js";
+import { UserLogin } from "../services/userSession.services/login.js"
+ import {RefreshAccessToken} from "../services/userSession.services/refreshAccessToken.js"
 
 
 const userLogin = new UserLogin(prisma)
@@ -20,4 +21,15 @@ export const login = asyncHandler(async (req, res) => {
     })
 
     res.status(200).json({ message: "User Logged In Successfully!", AccessToken: newAccessToken })
+})
+
+
+const refreshAccessToken = new RefreshAccessToken(prisma)
+ 
+export const refreshAccessToken = asyncHandler(async(req, res) => {
+    const incomingRefreshToken = req.cookies.refreshToken
+    if(!incomingRefreshToken) throw new ApiError(404, "Refresh Token missing for verification!")
+    
+    const newAccessToken = await refreshAccessToken(incomingRefreshToken)
+    res.status(200).json({AccessToken: newAccessToken})
 })
