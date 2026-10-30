@@ -31,5 +31,5 @@ export const refreshAccessToken = asyncHandler(async(req, res) => {
     if(!incomingRefreshToken) throw new ApiError(404, "Refresh Token missing for verification!")
     
     const newAccessToken = await refreshAccessToken(incomingRefreshToken)
-    res.status(200).json({AccessToken: newAccessToken})
+    res.status(200).json({AccessToken: newAccessToken.accessToken})
 })
