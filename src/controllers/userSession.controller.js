@@ -24,12 +24,12 @@ export const login = asyncHandler(async (req, res) => {
 })
 
 
-const refreshAccessToken = new RefreshAccessToken(prisma)
+const refreshAccToken = new RefreshAccessToken(prisma)
  
 export const refreshAccessToken = asyncHandler(async(req, res) => {
     const incomingRefreshToken = req.cookies.refreshToken
     if(!incomingRefreshToken) throw new ApiError(404, "Refresh Token missing for verification!")
     
-    const newAccessToken = await refreshAccessToken(incomingRefreshToken)
+    const newAccessToken = await refreshAccToken.refresh(incomingRefreshToken)
     res.status(200).json({AccessToken: newAccessToken.accessToken})
 })

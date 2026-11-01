@@ -2,7 +2,7 @@ import ApiError from "../../utils/apiError.util.js";
 import jwt from 'jsonwebtoken'
 import {generateAccessToken} from "../../utils/token.util.js"
 
-class RefreshAccessToken {
+export class RefreshAccessToken {
     constructor(prisma) {
         this.prisma = prisma
     }
