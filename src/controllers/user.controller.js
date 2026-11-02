@@ -31,7 +31,16 @@ export const update = asyncHandler(async(req, res) => {
     req.status(200).json({message: "Profile Picture Updated", NewProfilePicture:  updatedProfilePicture})
 })
 
+export const updatePassword = asyncHandler(async(req, res) => {
+    const {oldPassword, newPassword1, newPassword2} = req.body
+    if(!oldPassword) throw new ApiError(400, "Old password is empty")
+    if(!newPassword1) throw new ApiError(400, "New Password2 is empty")
+    if(!newPassword2) throw new ApiError(400, "New Password2 is empty")
 
+        
+    
+    
+})
 const getAllUsers = new GetAllUsers(prisma)
 
 export const getAllUser = asyncHandler(async( req, res) => {
