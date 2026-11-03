@@ -44,14 +44,15 @@ export const updatePassword = asyncHandler(async(req, res) => {
 const getAllUsers = new GetAllUsers(prisma)
 
 export const getAllUser = asyncHandler(async( req, res) => {
-    const allUsersOuput = await GetAllUsers.getAllUsers()
-    res.status(201).json({AllUsers: allUsersOuput})
+    const allUsersOutput = await getAllUsers.getAllUsers()
+    if(allUsersOutput === null) res.status(200).json({message: "No users created"})
+    res.status(201).json({AllUsers: allUsersOutput})
 })
 
-const deleteUser = new DeleteUser()
+const deleteUser = new DeleteUser(prisma)
 
 export const deleteAccount = asyncHandler(async(req, res) => {
-    const userId = req.user.id
+    const userId =  req.owner
     const isDeleted = await deleteUser.delete(userId)
     res.status(200).json({message: "User Deleted"})
 })

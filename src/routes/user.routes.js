@@ -3,6 +3,7 @@ import { register, update,getAllUser, deleteAccount } from '../controllers/user.
 import { upload } from '../../src/middlewares/multer.middleware.js'
 import { authAccess } from '../middlewares/authAccess.middleware.js'
 import {isAdmin} from '../middlewares/isAdmin.middleware.js'
+import { isAcOwner } from '../middlewares/isAccountOwner.middleware.js'
 
 const router = Router()
 
@@ -10,7 +11,7 @@ const router = Router()
 router.post("/register", register)
 router.patch("/updateProfilePic", upload.single("proifilePic"), authAccess, update)
 router.get("/getAllUser", authAccess, isAdmin, getAllUser)
-router.get("/delete", authAccess, deleteAccount)
+router.delete("/delete/:userId", authAccess, isAcOwner,  deleteAccount)
 
 
 export default router

@@ -1,3 +1,4 @@
+// import { JsonNullClass } from "@prisma/client/runtime/client";
 import  ApiError  from "../../utils/apiError.util.js";
 
 export class GetAllUsers {
@@ -8,5 +9,6 @@ export class GetAllUsers {
     async getAllUsers() {
         const allUsers = await this.prisma.user.findMany()
         if (allUsers.length === 0) return null
+        return allUsers
     }
 }
