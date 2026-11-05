@@ -5,6 +5,6 @@ import { authAccess } from "../middlewares/authAccess.middleware.js";
 const router = Router()
 
 router.post("/", login)
-router.post("refreshAccToken", authAccess, refreshAccessToken)
+router.post("/refreshAccToken",  refreshAccessToken)
 
 export default router

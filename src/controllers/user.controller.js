@@ -5,6 +5,7 @@ import {RegisterUser} from '../services/userServices/registerUser.js'
 import {UpdateProfilePicture} from "../services/userServices/updateProfilePicture.js"
 import {GetAllUsers} from "../services/userServices/getAllUser.js"
 import {DeleteUser} from "../services/userServices/deleteUser.js"
+import {UpdateUserPassword} from "../services/userServices/updatePassword.js"
 
 const registerUser  = new RegisterUser(prisma)
 
@@ -31,13 +32,18 @@ export const update = asyncHandler(async(req, res) => {
     req.status(200).json({message: "Profile Picture Updated", NewProfilePicture:  updatedProfilePicture})
 })
 
+
+const updateUserPassword = new UpdateUserPassword(prisma)
+
 export const updatePassword = asyncHandler(async(req, res) => {
     const {oldPassword, newPassword1, newPassword2} = req.body
+    const userId = req.owner.id
     if(!oldPassword) throw new ApiError(400, "Old password is empty")
-    if(!newPassword1) throw new ApiError(400, "New Password2 is empty")
+    if(!newPassword1) throw new ApiError(400, "New Password1 is empty")
     if(!newPassword2) throw new ApiError(400, "New Password2 is empty")
 
-        
+    const updatedPassword = await updateUserPassword(oldPassword, newPassword1, newPassword2, userId)
+
     
     
 })

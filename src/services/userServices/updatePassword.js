@@ -5,7 +5,14 @@ export class UpdateUserPassword  {
         this.prisma = prisma
     }
 
-    async updatePassword(oldPassword, newPassword1, newPassword2) {
+    async updatePassword(oldPassword, newPassword1, newPassword2, userId) {
+        const isCorrectPassword = await this.prisma.user.findFirst({
+            where: {
+                id: userId,
+                password:  oldPassword
+            }
+        })
+        if(!isCorrectPassword) throw new ApiError(401, "Incorrect password entered!")
         
     }
 }
