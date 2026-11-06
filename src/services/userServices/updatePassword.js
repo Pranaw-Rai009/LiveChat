@@ -21,6 +21,14 @@ export class UpdateUserPassword  {
 
         const newHasehdPassword = await hashPasssword(newPassword1) 
         if(!newHasehdPassword) throw new ApiError(500, "Error occured while hashing new password!")
-            
+        
+        const updated = await this.prisma.user.update({
+            where: {
+                id: userId
+            },
+            data: {
+                password: newHasehdPassword
+            }
+        })
     }
 }
