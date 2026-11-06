@@ -44,8 +44,7 @@ export const updatePassword = asyncHandler(async(req, res) => {
 
     const updatedPassword = await updateUserPassword(oldPassword, newPassword1, newPassword2, userId)
 
-    
-    
+    res.status(201).json({message: "Password updated!"})
 })
 const getAllUsers = new GetAllUsers(prisma)
 

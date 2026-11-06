@@ -1,6 +1,7 @@
 import { hash } from "bcrypt";
 import ApiError from "../../utils/apiError.util.js";
 import {hashPasssword} from "../../utils/passwordHash.util.js"
+import { update } from "../../controllers/user.controller.js";
 
 export class UpdateUserPassword  {
     constructor(prisma) {
@@ -30,5 +31,7 @@ export class UpdateUserPassword  {
                 password: newHasehdPassword
             }
         })
+        if(!updated) throw new ApiError(500, "Erroro occured while updating password!")
+        return updated
     }
 }
