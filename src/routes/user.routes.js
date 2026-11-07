@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { register, update,getAllUser, deleteAccount } from '../controllers/user.controller.js'
+import { register, update,getAllUser, deleteAccount, updatePassword } from '../controllers/user.controller.js'
 import { upload } from '../../src/middlewares/multer.middleware.js'
 import { authAccess } from '../middlewares/authAccess.middleware.js'
 import {isAdmin} from '../middlewares/isAdmin.middleware.js'
@@ -9,6 +9,7 @@ const router = Router()
 
 
 router.post("/register", register)
+router.patch("/updatePassword", authAccess, isAcOwner, updatePassword)
 router.patch("/updateProfilePic", upload.single("proifilePic"), authAccess, update)
 router.get("/getAllUser", authAccess, isAdmin, getAllUser)
 router.delete("/delete/:userId", authAccess, isAcOwner,  deleteAccount)
