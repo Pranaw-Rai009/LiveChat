@@ -6,7 +6,7 @@ export class RegisterUser {
         this.prisma = prisma
     }
 
-    async register(userData) {
+    async execute(userData) {
         const {userName, email, password, role} = userData
         const usernameExist = await this.prisma.user.findFirst({ where: {userName}})
         if(usernameExist) throw new ApiError(409, "User with this username already exist!")

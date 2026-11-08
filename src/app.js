@@ -3,7 +3,7 @@ import cookieparser from 'cookie-parser';
 import cors from 'cors'
 import { errroHandler } from './utils/errorHandler.util.js';
 import userRouter  from './routes/user.routes.js'
-import userLoginRouter from './routes/userSession.routes.js'
+import userSessionRouter from './routes/userSession.routes.js'
 
 const app = express()
 
@@ -18,12 +18,12 @@ app.use(express.json({ limit: "16kb" }))
 // app.use(express.json({static: "public"}))
 
 // testing routes
-app.get("/health", (req, res) => res.json({ status: "ok" }))
+// app.get("/health", (req, res) => res.json({ status: "ok" }))
 
 
 // Main Routes
 app.use("/api/user", userRouter)
-app.use("/api/login", userLoginRouter)
+app.use("/api/session", userSessionRouter)
 
 app.use(errroHandler)
 export default app

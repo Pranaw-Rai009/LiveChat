@@ -1,14 +1,14 @@
 import { hash } from "bcrypt";
 import ApiError from "../../utils/apiError.util.js";
 import {hashPasssword} from "../../utils/passwordHash.util.js"
-import { update } from "../../controllers/user.controller.js";
+// import { update } from "../../controllers/user.controller.js";
 
 export class UpdateUserPassword  {
     constructor(prisma) {
         this.prisma = prisma
     }
 
-    async updatePassword(oldPassword, newPassword1, newPassword2, userId) {
+    async execute(oldPassword, newPassword1, newPassword2, userId) {
         const isCorrectPassword = await this.prisma.user.findFirst({
             where: {
                 id: userId,

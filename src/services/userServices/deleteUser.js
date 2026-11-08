@@ -5,7 +5,7 @@ import  ApiError  from "../../utils/apiError.util.js";
         this.prisma = prisma
     }
 
-    async delete(userId) {
+    async execute(userId) {
         await this.prisma.user.delete({
             where: {
                 id: userId

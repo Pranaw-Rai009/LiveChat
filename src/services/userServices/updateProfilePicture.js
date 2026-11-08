@@ -6,7 +6,7 @@ export class UpdateProfilePicture {
         this.prisma = prisma
     }
 
-    async update(localFilePath, userId) {
+    async execute(localFilePath, userId) {
         const uploadResult = await uploadOnCloudinary(localFilePath)
         if(!uploadResult) throw new ApiError(500, "Failed to upload the image to cloudinary!")
         const newProfilePicture = await this.prisma.user.update({
