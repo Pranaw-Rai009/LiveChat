@@ -7,7 +7,7 @@ export class RefreshAccessToken {
         this.prisma = prisma
     }
 
-    async refresh(incomingRefreshToken) {
+    async execute(incomingRefreshToken) {
         const verifyRefreshToken =  await jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET)
         if(!verifyRefreshToken) throw new ApiError(401, "Refresh Token  is expired / Invalid" )
         console.log("Hellow")

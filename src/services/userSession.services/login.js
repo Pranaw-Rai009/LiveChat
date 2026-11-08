@@ -9,7 +9,7 @@ export class UserLogin {
         this.prisma = prisma
     }
 
-    async login(email, password) {
+    async execute(email, password) {
         const user = await this.prisma.user.findUnique({
             where: {
                 email

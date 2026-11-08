@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { login, refreshAccessToken } from '../controllers/userSession.controller.js'
+import { loginUserController, refreshAccessTokenController } from '../controllers/userSession.controller.js'
 import { authAccess } from "../middlewares/authAccess.middleware.js";
 
 const router = Router()
 
-router.post("/", login)
-router.post("/refreshAccToken",  refreshAccessToken)
+router.post("/login", loginUserController)
+router.post("/refreshAccToken",  refreshAccessTokenController)
 
 export default router

@@ -7,12 +7,12 @@ import { UserLogin } from "../services/userSession.services/login.js"
 
 const userLogin = new UserLogin(prisma)
 
-export const login = asyncHandler(async (req, res) => {
+export const loginUserController = asyncHandler(async (req, res) => {
     const { email, password } = req.body
     if (!email) throw new ApiError(400, "Email is missing!")
     if (!password) throw new ApiError(400, "Password is missing")
 
-    const loggedUser = await userLogin.login(email, password)
+    const loggedUser = await userLogin.execute(email, password)
     
     const { newRefreshToken, newAccessToken } = loggedUser
     res.cookie("newRefreshToken", newRefreshToken, {
@@ -24,12 +24,12 @@ export const login = asyncHandler(async (req, res) => {
 })
 
 
-const refreshAccToken = new RefreshAccessToken(prisma)
+const refreshAccessToken = new RefreshAccessToken(prisma)
  
-export const refreshAccessToken = asyncHandler(async(req, res) => {
+export const refreshAccessTokenController = asyncHandler(async(req, res) => {
     const incomingRefreshToken = req.cookies.refreshToken
     if(!incomingRefreshToken) throw new ApiError(404, "Refresh Token missing for verification!")
     
-    const newAccessToken = await refreshAccToken.refresh(incomingRefreshToken)
+    const newAccessToken = await refreshAccessToken.execute(incomingRefreshToken)
     res.status(200).json({AccessToken: newAccessToken.accessToken})
 })

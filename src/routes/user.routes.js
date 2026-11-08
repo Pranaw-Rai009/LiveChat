@@ -10,8 +10,8 @@ const router = Router()
 
 router.post("/register", registerUserController)
 router.patch("/updatePassword", authAccess, isAcOwner, updateUserPasswordController)
-router.patch("/updateProfilePic", upload.single("proifilePic"), authAccess, updateUserProfileController)
-router.get("/getAllUser", authAccess, isAdmin, fetchAllUsersController)
+router.patch("/updateProfilePicture", upload.single("proifilePic"), authAccess, updateUserProfileController)
+router.get("/fetchAllUser", authAccess, isAdmin, fetchAllUsersController)
 router.delete("/delete/:userId", authAccess, isAcOwner,  deleteUserAccountController)
 
 
