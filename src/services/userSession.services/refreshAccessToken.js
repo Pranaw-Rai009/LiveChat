@@ -10,7 +10,6 @@ export class RefreshAccessToken {
     async execute(incomingRefreshToken) {
         const verifyRefreshToken =  await jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET)
         if(!verifyRefreshToken) throw new ApiError(401, "Refresh Token  is expired / Invalid" )
-        console.log("Hellow")
         const userId = verifyRefreshToken.id
         const user = await this.prisma.user.findUnique({
             where: {
