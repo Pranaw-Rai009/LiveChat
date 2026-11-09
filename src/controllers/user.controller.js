@@ -26,8 +26,11 @@ const userProfilePicUpdate = new UpdateProfilePicture(prisma)
 
 export const updateUserProfileController = asyncHandler(async(req, res) => {
     const userId = req.user.id
-    if(!req.file) throw new ApiError(400, "No Image Uploaded!")
-    const updatedProfilePicture = await userProfilePicUpdate.execute(req.file, userId)
+    if(!req.file) throw new ApiError(400, "No image uploaded!")
+
+    const localFilePath = req.file.path
+    if(!localFilePath) throw new ApiError(400, "No Image Uploaded!")
+    const updatedProfilePicture = await userProfilePicUpdate.execute(localFilePath, userId)
     req.status(200).json({message: "Profile Picture Updated", NewProfilePicture:  updatedProfilePicture})
 })
 
