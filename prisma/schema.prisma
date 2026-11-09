@@ -28,6 +28,7 @@ model User {
   updatedAT    DateTime       @updatedAt
   refreshToken RefreshToken[]
   roomMember   RoomMember[]
+  createdRooms  Room[] @relation("RoomCreator")
 }
 
 model RefreshToken {
@@ -43,17 +44,24 @@ model Room {
   id         Int          @id @default(autoincrement())
   name       String       @unique
   profilePic String?
+  creatorId   Int
+  creator   User @relation("RoomCreator", fields: [creatorId], references: [id])
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
   roomMember RoomMember[]
 }
 
+enum roomRole {
+  ADMIN
+  MEMBER
+}
 model RoomMember {
   id        Int       @id @default(autoincrement())
   roomId    Int
   room      Room      @relation(fields: [roomId], references: [id])
   userId    Int
   user      User      @relation(fields: [userId], references: [id])
+  role    roomRole
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   message   Message[]
