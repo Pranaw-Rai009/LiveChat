@@ -31,7 +31,7 @@ export const updateUserProfileController = asyncHandler(async(req, res) => {
     const localFilePath = req.file.path
     if(!localFilePath) throw new ApiError(400, "No Image Uploaded!")
     const updatedProfilePicture = await userProfilePicUpdate.execute(localFilePath, userId)
-    req.status(200).json({message: "Profile Picture Updated", NewProfilePicture:  updatedProfilePicture})
+    res.status(200).json({message: "Profile Picture Updated", NewProfilePicture:  updatedProfilePicture})
 })
 
 
