@@ -1,3 +1,4 @@
+// import { userRole } from "../../generated/prisma/enums.js";
 import ApiError from "../../utils/apiError.util.js";
 
 export class FetchRoom {
@@ -6,7 +7,18 @@ export class FetchRoom {
     }
 
     async execute() {
-        const fetchedRooms = await this.prisma.room.findMany({})
+        const fetchedRooms = await this.prisma.room.findMany({
+            where: {},
+                include: {
+                    roomMember: {
+                        select: {
+                            role: true,
+                            userId: true
+                        }
+                    }
+                }
+            
+        })
         if(!fetchedRooms) throw new ApiError(500, "Error occured while fetching rooms!")
         if(fetchedRooms.length === 0) return 
         return fetchedRooms
