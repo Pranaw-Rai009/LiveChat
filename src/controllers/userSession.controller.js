@@ -1,9 +1,9 @@
 import { asyncHandler } from "../utils/asyncHandler.util.js";
 import  ApiError  from "../utils/apiError.util.js";
 import { prisma } from "../db/dbConnect.js";
-import { UserLogin } from "../services/userSession.services/login.js"
- import {RefreshAccessToken} from "../services/userSession.services/refreshAccessToken.js"
-
+import { UserLogin } from "../services/userSessionServices/login.js"
+ import {RefreshAccessToken} from "../services/userSessionServices/refreshAccessToken.js"
+import ms from "ms";
 
 const userLogin = new UserLogin(prisma)
 
@@ -17,7 +17,8 @@ export const loginUserController = asyncHandler(async (req, res) => {
     const { newRefreshToken, newAccessToken } = loggedUser
     res.cookie("newRefreshToken", newRefreshToken, {
         httpOnly: true,
-        secure: true
+        secure: true,
+         maxAge: ms(process.env.REFRESH_TOKEN_EXPIRY)
     })
 
     res.status(200).json({ message: "User Logged In Successfully!", AccessToken: newAccessToken })
