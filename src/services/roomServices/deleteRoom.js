@@ -6,16 +6,16 @@ export class DeleteRoom {
     }
 
     async execute(roomId) {
-        const roomExist = await this.prisma.room.findUnque({
+        const roomExist = await this.prisma.room.findUnique({
             where: {
-                id: roomId
+                id: parseInt(roomId)
             }
         })
         if(!roomExist) throw  new ApiError(404, "Room not found!")
         
         const deleteRoom = await this.prisma.room.delete({
             where: {
-                id: roomId
+                id: parseInt(roomId)
             }
         })
         if(!deleteRoom) throw new ApiError(500, "Error occured while deleting the room!")

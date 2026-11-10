@@ -3,6 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler.util.js";
 import {prisma} from "../db/dbConnect.js"
 import {CreateRoom} from "../services/roomServices/createRoom.js"
 import { DeleteRoom } from "../services/roomServices/deleteRoom.js";
+import { FetchRoom } from "../services/roomServices/fetchAllRooms.js";
 
 const roomCreate = new CreateRoom(prisma)
 export const createRoomController = asyncHandler(async(req, res) => {
@@ -20,5 +21,11 @@ export const deleteRoomController = asyncHandler(async(req, res) => {
 
     const deleteRoom = await roomDelete.execute(roomId)
     if(deleteRoom === true) res.status(200).json({message: `Room ${roomId} deleted`})
+})
+
+const roomFetch = new FetchRoom(prisma)
+export const fetchRoomController = asyncHandler(async(req, res) => {
+    const allRooms = await roomFetch.execute()
+    res.status(200).json({message: "All Rooms: ", allRooms})
 })
 
