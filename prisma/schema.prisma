@@ -23,12 +23,13 @@ model User {
   email        String         @unique
   password     String
   profilePic   String?
-  role         userRole @default(USER)
+  role         userRole       @default(USER)
   createdAt    DateTime       @default(now())
   updatedAT    DateTime       @updatedAt
   refreshToken RefreshToken[]
   roomMember   RoomMember[]
-  createdRooms  Room[] @relation("RoomCreator")
+  createdRooms Room[]         @relation("RoomCreator")
+  // roomAdmin    Room[]         @relation("RoomAdmin")
 }
 
 model RefreshToken {
@@ -44,8 +45,10 @@ model Room {
   id         Int          @id @default(autoincrement())
   name       String       @unique
   profilePic String?
-  creatorId   Int
-  creator   User @relation("RoomCreator", fields: [creatorId], references: [id])
+  creatorId  Int
+  creator    User         @relation("RoomCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+  // adminId    Int
+  // admin      User         @relation("RoomAdmin", fields: [adminId], references: [id])
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
   roomMember RoomMember[]
@@ -55,13 +58,14 @@ enum roomRole {
   ADMIN
   MEMBER
 }
+
 model RoomMember {
   id        Int       @id @default(autoincrement())
   roomId    Int
-  room      Room      @relation(fields: [roomId], references: [id])
+  room      Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
   userId    Int
-  user      User      @relation(fields: [userId], references: [id])
-  role    roomRole
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      roomRole @default(MEMBER)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   message   Message[]
