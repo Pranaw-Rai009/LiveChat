@@ -5,6 +5,7 @@ import { errroHandler } from './utils/errorHandler.util.js';
 import userRouter  from './routes/user.routes.js'
 import userSessionRouter from './routes/userSession.routes.js'
 import roomRouter from './routes/room.routes.js'
+import roomMemberRouter from './routes/roomMember.routes.js'
 
 const app = express()
 
@@ -26,6 +27,6 @@ app.use(express.json({ limit: "16kb" }))
 app.use("/api/user", userRouter)
 app.use("/api/session", userSessionRouter)
 app.use("/api/room", roomRouter)
-
+app.use("/api/roomMember", roomMemberRouter)
 app.use(errroHandler)
 export default app

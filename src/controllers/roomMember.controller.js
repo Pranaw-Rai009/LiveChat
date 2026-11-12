@@ -4,7 +4,10 @@ import  {DeleteRoomMember} from "../services/roomMemberServices/deleteRoomMember
 import { prisma } from "../db/dbConnect.js";
 
 const roomMemberDelete = new DeleteRoomMember(prisma)
-export const deleteUserController = asyncHandler(async(req, res) => {
-    const userId = req.user.id
-    const deletedRoomMember = 
+export const deleteRoomMemberController = asyncHandler(async(req, res) => {
+    const roomId = req.params.roomId
+    if(!roomId) throw new ApiError(400, "Room id is mising!")
+    const userId = req.user.id 
+    const deletedRoomMember = roomMemberDelete.execute(userId, roomId)
+    res.status(200).json({message: "Room member removed"})
 })

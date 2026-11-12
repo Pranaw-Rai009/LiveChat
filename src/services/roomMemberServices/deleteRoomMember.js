@@ -5,10 +5,11 @@ export class DeleteRoomMember {
         this.prisma = prisma
     }
 
-    async execute(userId) {
+    async execute(userId, roomId) {
         const deleted = await this.prisma.roomMember.delete({
             where: {
-                userId
+                userId,
+                roomId: parseInt(roomId)
             }
         })
         if(!deleted) throw new ApiError(500, "Error occrued while deleting the user!")

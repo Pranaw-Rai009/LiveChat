@@ -29,7 +29,7 @@ model User {
   refreshToken RefreshToken[]
   roomMember   RoomMember[]
   createdRooms Room[]         @relation("RoomCreator")
-  // roomAdmin    Room[]         @relation("RoomAdmin")
+  roomAdmin    Room[]         @relation("RoomAdmin")
 }
 
 model RefreshToken {
@@ -47,8 +47,8 @@ model Room {
   profilePic String?
   creatorId  Int
   creator    User         @relation("RoomCreator", fields: [creatorId], references: [id], onDelete: Cascade)
-  // adminId    Int
-  // admin      User         @relation("RoomAdmin", fields: [adminId], references: [id])
+  adminId    Int
+  admin      User         @relation("RoomAdmin", fields: [adminId], references: [id])
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
   roomMember RoomMember[]
@@ -62,6 +62,7 @@ enum roomRole {
 model RoomMember {
   id        Int       @id @default(autoincrement())
   roomId    Int
+  // when room with id x  is deleted , then delete the room member linked here with that room id
   room      Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
   userId    Int
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
