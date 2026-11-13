@@ -8,8 +8,7 @@ export class DeleteRoomMember {
     async execute(userId, roomId) {
         const deleted = await this.prisma.roomMember.delete({
             where: {
-                userId,
-                roomId: parseInt(roomId)
+                roomId_userId: {roomId, userId}
             }
         })
         if(!deleted) throw new ApiError(500, "Error occrued while deleting the user!")

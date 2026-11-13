@@ -4,7 +4,7 @@ import { authAccess } from '../middlewares/authAccess.middleware.js'
 
 const router = Router()
 
-router.delete("/delete/:roomId", authAccess, deleteRoomMemberController)
+router.delete("/delete/:roomId/member/:userId", authAccess, deleteRoomMemberController)
 router.get("/list/:roomId/members", authAccess, listAllMemberOfARoomController)
 router.post("/add/:roomId/member", authAccess, addUserToARoomController)
 

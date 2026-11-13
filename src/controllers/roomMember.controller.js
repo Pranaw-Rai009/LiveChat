@@ -7,9 +7,9 @@ import { AddToRoom } from "../services/roomMemberServices/addToARoom.js";
 
 const roomMemberDelete = new DeleteRoomMember(prisma)
 export const deleteRoomMemberController = asyncHandler(async(req, res) => {
-    const roomId = req.params.roomId
+    const roomId =  parseInt(req.params.roomId)
     if(!roomId) throw new ApiError(400, "Room id is mising!")
-    const userId = req.user.id 
+    const userId = parseInt(req.params.userId)
     const deletedRoomMember = roomMemberDelete.execute(userId, roomId)
     res.status(200).json({message: "Room member removed"})
 })

@@ -41,7 +41,7 @@ res.status(200).json({message: "Room Data", RoomData: roomData})
 
 const roomAdminUpdate = new UpdateRoomAdmin(prisma)
 export const updateRoomAdminController = asyncHandler(async(req, res) => {
-    const adminId = req.user.id
+    const adminId = req.user.id // later change it to req.admin.id
     const roomId = req.params.roomId
     const {newAdminId} = req.body
     if(!newAdminId) throw new ApiError(400, "newAdminId is missing!")
