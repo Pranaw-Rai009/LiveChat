@@ -32,8 +32,8 @@ export const fetchAllRoomController = asyncHandler(async(req, res) => {
 
 const roomFetch = new FetchARoomDetail(prisma)
 export const fetchARoomController = asyncHandler(async(req, res) => {
-    const roomId = req.params.id
-    if(!roomdId) throw new ApiError(400, "Room id is missing!")
+    const roomId = req.params.roomId
+    if(!roomId) throw new ApiError(400, "Room id is missing!")
     const roomData = await roomFetch.execute(roomId)
 res.status(200).json({message: "Room Data", RoomData: roomData})
 })
