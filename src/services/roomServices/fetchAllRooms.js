@@ -7,18 +7,7 @@ export class FetchRoom {
     }
 
     async execute() {
-        const fetchedRooms = await this.prisma.room.findMany({
-            where: {},
-                include: {
-                    roomMember: {
-                        select: {
-                            role: true,
-                            userId: true
-                        }
-                    }
-                }
-            
-        })
+        const fetchedRooms = await this.prisma.room.findMany({})
         if(!fetchedRooms) throw new ApiError(500, "Error occured while fetching rooms!")
         if(fetchedRooms.length === 0) return 
         return fetchedRooms

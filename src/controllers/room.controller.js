@@ -5,6 +5,7 @@ import {CreateRoom} from "../services/roomServices/createRoom.js"
 import { DeleteRoom } from "../services/roomServices/deleteRoom.js";
 import { FetchRoom } from "../services/roomServices/fetchAllRooms.js";
 import {FetchARoomDetail} from "../services/roomServices/fetchARoom.js"
+import {UpdateRoomAdmin} from "../services/roomServices/updateRoomAdmin.js"
 
 const roomCreate = new CreateRoom(prisma)
 export const createRoomController = asyncHandler(async(req, res) => {
@@ -37,4 +38,17 @@ export const fetchARoomController = asyncHandler(async(req, res) => {
     const roomData = await roomFetch.execute(roomId)
 res.status(200).json({message: "Room Data", RoomData: roomData})
 })
+
+const roomAdminUpdate = new UpdateRoomAdmin(prisma)
+export const updateRoomAdminController = asyncHandler(async(req, res) => {
+    const adminId = req.user.id
+    const roomId = req.params.roomId
+    const {newAdminId} = req.body
+    if(!newAdminId) throw new ApiError(400, "newAdminId is missing!")
+    if(!adminId) throw new ApiError(400, "adminId is missing!")
+    const newAdmin = await roomAdminUpdate.execute(roomId, adminId, newAdminId)
+    res.status(200).json({message: "Admin updated", NewAdmin: newAdmin})
+
+})
+
 
