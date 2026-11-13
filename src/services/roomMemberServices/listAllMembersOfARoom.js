@@ -8,9 +8,12 @@ export class ListAllMemberOfARoom {
     async execute(roomId) {
         const allMembers = await this.prisma.roomMember.findMany({
             where: {
-                id: roomId
+                roomId
             }
         })
+        console.log(allMembers)
         if(allMembers === null) return null
+        return allMembers
+
     }
 }
