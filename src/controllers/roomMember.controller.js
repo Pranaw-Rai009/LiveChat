@@ -5,6 +5,7 @@ import  {DeleteRoomMember} from "../services/roomMemberServices/deleteRoomMember
 import { ListAllMemberOfARoom } from "../services/roomMemberServices/listAllMembersOfARoom.js";
 import { AddToRoom } from "../services/roomMemberServices/addToARoom.js";
 import { JoinRoom } from "../services/roomMemberServices/joinARoom.js";
+import { FetchMyRooms } from "../services/roomMemberServices/fetchJoinedRooms.js";
 
 const roomMemberDelete = new DeleteRoomMember(prisma)
 export const deleteRoomMemberController = asyncHandler(async(req, res) => {
@@ -44,3 +45,11 @@ export const joinRoomController = asyncHandler(async(req, res) => {
     res.status(200).json({message: `Joined Room ${roomId}`})
 })
 
+
+const fetchMyRooms = new FetchMyRooms(prisma)
+export const fetchMyRoomsController = asyncHandler(async(req, res) => {
+    const userId = req.user.id
+    if(!userId) throw new ApiError(400, "User Id is required!")
+    const rooms = await fetchMyRooms.execute(userId)
+    res.status(200).json({message: "All Rooms", rooms})
+})
