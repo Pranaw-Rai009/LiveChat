@@ -4,6 +4,7 @@ import { prisma } from "../db/dbConnect.js";
 import  {DeleteRoomMember} from "../services/roomMemberServices/deleteRoomMember.js"
 import { ListAllMemberOfARoom } from "../services/roomMemberServices/listAllMembersOfARoom.js";
 import { AddToRoom } from "../services/roomMemberServices/addToARoom.js";
+import { JoinRoom } from "../services/roomMemberServices/joinARoom.js";
 
 const roomMemberDelete = new DeleteRoomMember(prisma)
 export const deleteRoomMemberController = asyncHandler(async(req, res) => {
@@ -32,3 +33,14 @@ export const addUserToARoomController = asyncHandler(async(req, res) => {
     const newMember = await roomNewMember.execute(userId, roomId, role)
     res.status(200).json({message: "Added to room", newMember})
 })
+
+const roomJoin = new JoinRoom(prisma)
+export const joinRoomController = asyncHandler(async(req, res) => {
+    const roomId = parseInt(req.params.roomId)
+    if(!roomId) throw  new ApiError(400, "Room Id is required!")
+    const userId = req.user.id
+    const defRole = "MEMBER"
+    const join = await roomJoin.execute(userId, roomId, defRole)
+    res.status(200).json({message: `Joined Room ${roomId}`})
+})
+

@@ -3,6 +3,6 @@ export const errroHandler = (err, req, res, next) => {
     if(statusCode >= 500) console.error(err)
     res.status(statusCode).json({
         success: false,
-        Message: statusCode >= 500 ? "Internal Server Error" : err.message
+        message: statusCode >= 500 ? "Internal Server Error" : err.message
     })
 }
