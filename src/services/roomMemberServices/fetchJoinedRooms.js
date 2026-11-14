@@ -1,4 +1,4 @@
-import { join } from "@prisma/client/runtime/client";
+// import { join } from "@prisma/client/runtime/client";
 import ApiError from "../../utils/apiError.util.js";
 
 export class FetchJoinedRooms {
