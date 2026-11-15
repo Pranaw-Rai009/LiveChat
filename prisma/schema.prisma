@@ -69,6 +69,7 @@ model RoomMember {
   role      roomRole @default(MEMBER)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  leftAt  DateTime?
   message   Message[]
 
   @@unique([roomId, userId])
@@ -80,5 +81,5 @@ model Message {
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   roomMemberId Int
-  roomMember   RoomMember @relation(fields: [roomMemberId], references: [id])
+  roomMember   RoomMember @relation(fields: [roomMemberId], references: [id], onDelete: Cascade)
 }
