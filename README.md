@@ -8,8 +8,9 @@ Register User: http://localhost:2001/api/user/register
 Login: http://localhost:2001/api/session/login
 Fetch All User: http://localhost:2001/api/user/
 Update Profile Picture: http://localhost:2001/api/user/update/:userId/profile
-Update User Password: http://localhost:2001/api/user/updatePassword/:userId
+Update User Password: http://localhost:2001/api/user/update/:accId/password
 Refresh Access Token: http://localhost:2001/api/session/refreshAccToken
+Delete User Ac:  Pending
 
 # ROOM
 Create Room: http://localhost:2001/api/room/create

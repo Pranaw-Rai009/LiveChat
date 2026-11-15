@@ -4,7 +4,7 @@ import { asyncHandler } from "../utils/asyncHandler.util.js";
 
 export const isAcOwner = asyncHandler(async (req, res, next) => {
     const userId = req.user.id
-    const accId = req.params.userId
+    const accId = req.params.accId
     if (!accId) throw new ApiError(400, "Account Id is missing!")
     const isAccountId = await prisma.user.findUnique({
         where: {
