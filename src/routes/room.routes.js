@@ -7,7 +7,7 @@ router.post("/create", authAccess, createRoomController)
 router.delete("/delete/:roomId", authAccess, deleteRoomController)
 router.get("/fetch", authAccess, fetchAllRoomController)
 router.get("/fetchA/:roomId", authAccess, fetchARoomController)
-router.patch("/updateAdmin/:roomId", authAccess, updateRoomAdminController)
+router.patch("/update/:roomId/admin", authAccess, updateRoomAdminController)
 
 
 export default router

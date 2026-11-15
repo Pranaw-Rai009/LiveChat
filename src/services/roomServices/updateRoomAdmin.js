@@ -10,6 +10,7 @@ export class UpdateRoomAdmin {
     }
 
     async execute(roomId, adminId, newAdminId) {
+        
         const newAdminData = await this.prisma.$transaction(async (tx) => {
             const updateToAdmin = await tx.room.update({
                 where: {

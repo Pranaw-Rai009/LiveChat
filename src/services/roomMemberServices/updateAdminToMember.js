@@ -10,7 +10,7 @@ export class UpdateAdminToMember {
                 role: "MEMBER"
             }
         })
-        if(!updateToMemberData) throw new ApiError(500, "Error occured while updating admin to member!")
+        // if(!updateToMemberData) throw new ApiError(500, "Error occured while updating admin to member!")
         return updateToMemberData
     }
 }
