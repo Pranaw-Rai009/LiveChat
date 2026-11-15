@@ -62,7 +62,7 @@ enum roomRole {
 model RoomMember {
   id        Int       @id @default(autoincrement())
   roomId    Int
-  // when room with id x  is deleted , then delete the room member linked here with that room id
+  // when room with id x  is deleted , then delete the room member linked here with that room id  / either one triggerss the delete
   room      Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
   userId    Int
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)

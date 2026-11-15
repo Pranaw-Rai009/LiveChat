@@ -11,7 +11,7 @@ export class RoomExist {
                 id: roomId
             } 
         })
-        if(!room) throw new ApiError(404, "Room with this id doesn't exist!")
+        if(room === null) return null
         return room
     }
 }

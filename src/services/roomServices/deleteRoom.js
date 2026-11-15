@@ -1,17 +1,16 @@
 import ApiError from "../../utils/apiError.util.js";
+import { RoomExist } from "./roomExist.js";
 
 export class DeleteRoom {
     constructor(prisma) {
         this.prisma = prisma
+        this.roomExist = new RoomExist(prisma)
     }
 
     async execute(roomId) {
-        const roomExist = await this.prisma.room.findUnique({
-            where: {
-                id: parseInt(roomId)
-            }
-        })
-        if(!roomExist) throw  new ApiError(404, "Room not found!")
+
+        const roomCheck = await this.roomExist.execute(roomId)
+        if(roomCheck === null) throw new ApiError(404,"Room with this ID doesn't exist!")
         
         const deleteRoom = await this.prisma.room.delete({
             where: {
