@@ -9,16 +9,16 @@ const router = Router()
 
 
 router.post("/register", registerUserController)
-router.post("/updatePassword/:userId", authAccess, isAcOwner, updateUserPasswordController)
-
-
-
-router.patch("/updateProfilePicture/:userId", authAccess, isAcOwner, upload.single("profilePic"), updateUserProfileController)
-router.get("/fetchAllUser", authAccess, fetchAllUsersController)
-
+router.get("/", authAccess, fetchAllUsersController)
+router.patch("/update/:userId/profile", authAccess, isAcOwner, upload.single("profilePic"), updateUserProfileController)
+router.post("/update/password", authAccess, isAcOwner, updateUserPasswordController)
 router.delete("/delete/:userId", authAccess, isAcOwner, deleteUserAccountController)
 
 // Admin's job
 router.get("/fetchAllUser", authAccess, fetchAllUsersController)
+
+
+
+
 
 export default router

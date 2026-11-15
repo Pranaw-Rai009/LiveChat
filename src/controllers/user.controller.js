@@ -10,12 +10,12 @@ import { UpdateUserPassword } from "../services/userServices/updatePassword.js"
 const userRegister = new RegisterUser(prisma)
 
 export const registerUserController = asyncHandler(async (req, res) => {
-    const { userName, email, password, role } = req.body
+    const { userName, email, password, globalRole } = req.body
     if (!userName) throw new ApiError(400, "Username is misisng!")
     if (!email) throw new ApiError(400, "Email is missing!")
     if (!password) throw new ApiError(400, "Password is missing!")
-    if (!role) throw new ApiError(400, "Role is missing!")
-    const userData = { userName, email, password, role }
+    if (!globalRole) throw new ApiError(400, "Role is missing!")
+    const userData = { userName, email, password, globalRole }
     const user = await userRegister.execute(userData)
     if (!user) throw new ApiError(500, "User  NOT created")
     res.status(201).json({ User: user })

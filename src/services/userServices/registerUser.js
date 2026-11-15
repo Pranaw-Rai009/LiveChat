@@ -7,7 +7,7 @@ export class RegisterUser {
     }
 
     async execute(userData) {
-        const {userName, email, password, role} = userData
+        const {userName, email, password, globalRole} = userData
         const usernameExist = await this.prisma.user.findFirst({ where: {userName}})
         if(usernameExist) throw new ApiError(409, "User with this username already exist!")
         const emailExist = await this.prisma.user.findFirst({where: {email}})
@@ -19,13 +19,13 @@ export class RegisterUser {
         const hashedPassword = await hashPasssword(password)
         if(!hashedPassword) throw new ApiError(500, "Couldn't hash the password!")
         
-        const isRoleValid = (role === "ADMIN" || role === "USER")
+        const isRoleValid = (globalRole === "ADMIN" || globalRole === "USER")
         if(!isRoleValid) throw new ApiError(400, "Invalid role entered!")
             
-        if(role === "ADMIN") {
+        if(globalRole === "ADMIN") {
             const existAdmin = await this.prisma.user.findFirst({
                 where: {
-                    role: "ADMIN"
+                    globalRole: "ADMIN"
                 }
             })
             if(existAdmin) throw new ApiError(409, "Admin already exist!, Couldn't create new!")
@@ -35,7 +35,7 @@ export class RegisterUser {
                     userName,
                     email,
                     password: hashedPassword,
-                    role
+                    globalRole
                 }
             })
             if(!createdAdmin) throw new ApiError(500, "Admin creation unsuccessful!")
@@ -44,13 +44,13 @@ export class RegisterUser {
             return adminData
         }
 
-        if(role === "USER") {
+        if(globalRole === "USER") {
             const createdUser = await this.prisma.user.create({
                 data: {
                     userName,
                     email,
                     password: hashedPassword,
-                    role
+                    globalRole
                 }
             })
             if(!createdUser) throw new ApiError(500, "User creation unsuccessfull!")
