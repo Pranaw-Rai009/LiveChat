@@ -1,5 +1,5 @@
 import { Server, Socket } from 'socket.io'
-import httpServer from '../app'
+import httpServer from '../app.js'
 
 export const initSocket = (httpServer) => {
     const io = new Server(httpServer, {
