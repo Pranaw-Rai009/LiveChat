@@ -1,6 +1,7 @@
 // server.js
 import { prisma } from './db/dbConnect.js'
-import app from './app.js'
+import httpServer from './app.js'
+import { initSocket } from './socket/index.js'
 
 const startServer = async function () {
     await prisma.$queryRaw`SELECT 1`
@@ -10,9 +11,9 @@ startServer()
 .then(() => {
     console.log("Database Connection Successfull")
 
-
-    const server = app.listen(process.env.PORT, () => {
-        console.log(`The server is listening on port ${process.env.PORT}`)
+    initSocket(httpServer)
+    const server =  httpServer.listen(process.env.PORT, () => {
+        console.log(`The server is listening on http://localhost:${process.env.PORT}`)
     })
 
     // to catch port binding error
