@@ -12,7 +12,7 @@ router.post("/register", registerUserController)
 router.get("/", authAccess, fetchAllUsersController)
 router.patch("/update/:userId/profile", authAccess, isAcOwner, upload.single("profilePic"), updateUserProfileController)
 router.post("/update/:accId/password", authAccess, isAcOwner, updateUserPasswordController)
-router.delete("/delete/:userId", authAccess, isAcOwner, deleteUserAccountController)
+router.delete("/delete/:accId", authAccess, isAcOwner, deleteUserAccountController)
 
 // Admin's job
 router.get("/fetchAllUser", authAccess, fetchAllUsersController)

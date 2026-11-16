@@ -59,6 +59,6 @@ const userAccountDelete = new DeleteUser(prisma)
 
 export const deleteUserAccountController = asyncHandler(async (req, res) => {
     const userId = req.owner
-    const isDeleted = await deleteUser.execute(userId)
-    res.status(200).json({ message: "User Deleted" })
+    const isDeleted = await userAccountDelete.execute(userId)
+    res.status(200).json({ message: "User Disabled" })
 })

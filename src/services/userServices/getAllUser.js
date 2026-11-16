@@ -17,6 +17,7 @@ export class FetchAllUsers {
                 globalRole: true,
                 createdAt: true,
                 updatedAT: true,
+                globalStatus: true
             }
         })
         if (allUsers.length === 0) return null

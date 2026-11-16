@@ -1,4 +1,4 @@
-import { UserScalarFieldEnum } from "../../generated/prisma/internal/prismaNamespace"
+// import { UserScalarFieldEnum } fr/om "../../generated/prisma/internal/prismaNamespace"
 
  export class DeleteUser {
     constructor(prisma) {
@@ -16,40 +16,43 @@ import { UserScalarFieldEnum } from "../../generated/prisma/internal/prismaNames
         if(allRoomMembership === null) {
             const updateUserStatus =  await tx.user.update({
             where: {
-                id: roomMember.userId
+                id: userId
             }, 
             data: {
-                userName: `$livechatuser${roomMember.userId}`,
-                email: `anonymous${roomMember.userId}@gmail.com`,
-                password: `deleted${roomMember.userId}`,
-                profilePic: null,
-                globalState: "DISABLED",
+               userName: `deleted_${userId}`,
+                    email: `deleted_${userId}@deleted.invalid`,
+                    password: `deleted_${userId}`,
+                    profilePic: null,
+                    globalState: "DISABLED",
             }
         })
-        return
-        }
+    }
 
-        for (const roomMember in allRoomMembership) {
-            const count = await tx.prisma.roomMember.count({
+        for (const roomMember of allRoomMembership) {
+            console.log("Hello", roomMember)
+            const count = await tx.roomMember.count({
                 where: {
-                    roomId: roomMember.id,
+                    roomId: roomMember.roomId,
                     userId: {not: userId},
                     leftAt: null,
-                    user: { globalState: "ENABLED"}
+                    user: { globalStatus: "ENABLED"}
                 }
             })
             if(count === 0) {
-                await tx.message.deleteMany({ where: {roomMemberId: roomMember.id }})
+                await tx.message.deleteMany({ where: {roomMemberId: roomMember.roomId }})
                 await tx.roomMember.deleteMany({ where: {roomId: roomMember.roomId}})
                 await tx.room.delete({ where: {id: roomMember.roomId}})
-                return
+                continue
             }
             if(roomMember.role === "ADMIN") {
                 const oldestMember = await tx.roomMember.findFirst({
                     where: {
                         roomId: roomMember.roomId,
                         userId: { not: roomMember.userId},
-                        leftAt: null
+                        leftAt: null,
+                        user: {
+                            globalStatus: "ENABLED"
+                        }
                     },
                     orderBy: {
                         createdAt: 'asc'
@@ -85,22 +88,22 @@ import { UserScalarFieldEnum } from "../../generated/prisma/internal/prismaNames
                 }
             })
             
-            await tx.refreshToken.deleteMany({
-                where: {
-                    userId: roomMember.userId
-                }
-            })
         }
+        await tx.refreshToken.deleteMany({
+            where: {
+                userId
+            }
+        })
         const updateUserStatus =  await tx.user.update({
             where: {
-                id: roomMember.userId
+                id: userId
             }, 
             data: {
                userName: `deleted_${userId}`,
                     email: `deleted_${userId}@deleted.invalid`,
                     password: `deleted_${userId}`,
                     profilePic: null,
-                    globalState: "DISABLED",
+                    globalStatus: "DISABLED",
             }
         })
            })
