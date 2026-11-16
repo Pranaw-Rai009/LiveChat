@@ -10,7 +10,7 @@ Fetch All User: http://localhost:2001/api/user/
 Update Profile Picture: http://localhost:2001/api/user/update/:userId/profile
 Update User Password: http://localhost:2001/api/user/update/:accId/password
 Refresh Access Token: http://localhost:2001/api/session/refreshAccToken
-Delete User Ac:  Pending
+Delete User Ac:  http://localhost:2001/api/user/delete/:userId
 
 # ROOM
 Create Room: http://localhost:2001/api/room/create
@@ -23,5 +23,7 @@ Delete Room: http://localhost:2001/api/room/delete/:roomId  // Not completed
 List All Room Members: http://localhost:2001/api/roomMember/list/:roomId/members
 Add User to Room: http://localhost:2001/api/roomMember/add/:roomId/member
 Remove User From A Room: http://localhost:2001/api/roomMember/delete/:roomId/member/5
-
+Leave Room: http://localhost:2001/api/roomMember/leave/:roomId
+Fetch All Me Joined Rooms: http://localhost:2001/api/roomMember/room
+Join Room: http://localhost:2001/api/roomMember/join/:roomId/room
 
