@@ -17,6 +17,11 @@ enum globalRole {
   USER
 }
 
+enum globalStatus {
+  ENABLED
+  DISABLED
+}
+
 model User {
   id           Int            @id @default(autoincrement())
   userName     String         @unique
@@ -24,6 +29,7 @@ model User {
   password     String
   profilePic   String?
   globalRole         globalRole       @default(USER)
+  globalStatus   globalStatus @default(ENABLED)
   createdAt    DateTime       @default(now())
   updatedAT    DateTime       @updatedAt
   refreshToken RefreshToken[]
