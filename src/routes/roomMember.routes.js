@@ -1,5 +1,5 @@
 import {Router} from 'express'
-import {deleteRoomMemberController, listAllMemberOfARoomController, addUserToARoomController, joinRoomController, fetchMyRoomsController} from "../controllers/roomMember.controller.js"
+import {deleteRoomMemberController, listAllMemberOfARoomController, addUserToARoomController, joinRoomController, fetchMyRoomsController, leaveRoomController} from "../controllers/roomMember.controller.js"
 import { authAccess } from '../middlewares/authAccess.middleware.js'
 
 const router = Router()
@@ -9,6 +9,7 @@ router.delete("/delete/:roomId/member/:userId", authAccess, deleteRoomMemberCont
 router.post("/add/:roomId/member", authAccess, addUserToARoomController)
 router.post("/join/:roomId/room", authAccess, joinRoomController)
 router.get("/room", authAccess, fetchMyRoomsController)
+router.post("/leave/:roomId", authAccess, leaveRoomController)
 
 
 export default router

@@ -1,4 +1,4 @@
-import { ApiError } from "../../utils/apiError.util.js";
+import ApiError from "../../utils/apiError.util.js";
 import { RoomMembership } from "../accessServices/roomMembership.js"
 import { RoomExist } from "../roomServices/roomExist.js";
 
@@ -14,7 +14,7 @@ export class LeaveRoom {
         if (!room) throw new ApiError(404, "Invalid Room!")
 
         const me = await this.roomMembership.execute(userId, roomId)
-        if (!me) throw new ApiError(403, "You are not a member of this room!")
+        if (me.leftAt !==  null) throw new ApiError(403, "You are not a member of this room!")
 
         await this.prisma.$transaction(async (tx) => {
             const othersCount = await tx.roomMember.count({

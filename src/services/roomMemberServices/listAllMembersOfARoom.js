@@ -17,7 +17,8 @@ export class ListAllMemberOfARoom {
                 role: true,
                 id: true,
                 createdAt: true,
-                updatedAt: true
+                updatedAt: true,
+                leftAt: true
             }
         })
         console.log(allMembers)

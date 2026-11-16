@@ -59,7 +59,8 @@ export const fetchMyRoomsController = asyncHandler(async(req, res) => {
 const leaveRoom = new LeaveRoom(prisma)
 export const leaveRoomController = asyncHandler(async(req, res) => {
     const userId = req.user.id
-    const roomId = parseInt(req.params.id)
+    const roomId = parseInt(req.params.roomId)
     if(!roomId) throw new ApiError(400, "Room Id is missing!")
     await leaveRoom.execute(userId, roomId) 
+    res.status(200).json({message: "Room Left"})
 })

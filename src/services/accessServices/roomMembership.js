@@ -1,4 +1,4 @@
-import ApiError from "../../utils/apiError.util,js";
+// import ApiError from "../../utils/apiError.util,js";
 
 export class RoomMembership {
     constructor(prisma) {
@@ -9,10 +9,10 @@ export class RoomMembership {
         const membership = await this.prisma.roomMember.findUnique({
             where : {
                 roomId_userId: {roomId, userId},
-                leftAt: null
+                // leftAt: null
             }
-        })
-        if(membership === null) return null
+        })  
+        // if(membership.leftAt !== null) return false
         return membership
     }
 }
