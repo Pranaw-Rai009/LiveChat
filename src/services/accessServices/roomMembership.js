@@ -9,7 +9,7 @@ export class RoomMembership {
         const membership = await this.prisma.roomMember.findUnique({
             where : {
                 roomId_userId: {roomId, userId},
-                // leftAt: null
+                leftAt: null
             }
         })  
         // if(membership.leftAt !== null) return false
