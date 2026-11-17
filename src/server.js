@@ -2,7 +2,7 @@
 import { prisma } from './db/dbConnect.js'
 import httpServer from './app.js'
 import { initSocket } from './socket/index.js'
-
+import { socketAuth } from './socket/socketMiddleware/socketAuth.js'
 const startServer = async function () {
     await prisma.$queryRaw`SELECT 1`
 }
