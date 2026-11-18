@@ -7,6 +7,7 @@ import userRouter  from './routes/user.routes.js'
 import userSessionRouter from './routes/userSession.routes.js'
 import roomRouter from './routes/room.routes.js'
 import roomMemberRouter from './routes/roomMember.routes.js'
+import messageRouter from './routes/message.routes.js'
 
 const app = express()
 const httpServer = createServer(app)
@@ -29,5 +30,6 @@ app.use("/api/user", userRouter)
 app.use("/api/session", userSessionRouter)
 app.use("/api/room", roomRouter)
 app.use("/api/roomMember", roomMemberRouter)
+app.use("/api/message", messageRouter)
 app.use(errroHandler)
 export default httpServer

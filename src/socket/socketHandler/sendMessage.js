@@ -12,7 +12,7 @@ export const registerSendMessage = (socket, io) => {
         if (!message) throw new ApiError(400, "Message is missing!")
         const userId = socket.user.id
         const isMember = await roomMemberCheck.execute(userId, roomId)
-        if(isMember === null) throw new ApiError(404, "You are not a room member")
+        if(isMember === null) throw new ApiError(404, "You are not a room member") 
     })
     } catch(err) {
         
