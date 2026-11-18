@@ -2,6 +2,7 @@ import { Server } from 'socket.io'
 import httpServer from '../app.js'
 import { socketAuth } from './socketMiddleware/socketAuth.js'
 import { registerRoomHandlers } from './socketHandler/roomHandler.js'
+import {registerMessageHandlers} from './socketHandler/sendMessage.js'
 
 export const initSocket = (httpServer) => {
     const io = new Server(httpServer, {
@@ -13,6 +14,7 @@ export const initSocket = (httpServer) => {
         console.log("Connected: ", socket.id)
 
         registerRoomHandlers(io, socket)
+        registerMessageHandlers(io, socket)
 
         socket.on("disconnect", () => {
             console.log("Disconnected: ", socket.id)
