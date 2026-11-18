@@ -1,7 +1,7 @@
 import { Server } from 'socket.io'
 import httpServer from '../app.js'
 import { socketAuth } from './socketMiddleware/socketAuth.js'
-import { registerRoomHandlers } from './roomHandler.js'
+import { registerRoomHandlers } from './socketHandler/roomHandler.js'
 
 export const initSocket = (httpServer) => {
     const io = new Server(httpServer, {

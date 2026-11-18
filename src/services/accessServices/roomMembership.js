@@ -12,6 +12,7 @@ export class RoomMembership {
                 leftAt: null
             }
         })  
+        console.log(membership)
         // if(membership.leftAt !== null) return false
         return membership
     }
