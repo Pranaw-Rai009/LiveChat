@@ -1,7 +1,9 @@
+import { use } from "react"
+import { prisma } from "../db/dbConnect.js"
 import { RoomMemberCheck } from "../services/accessServices/isRoomMember.js"
-import ApiError from "../utils/apiError.util"
+import ApiError from "../utils/apiError.util.js"
 
-const roomMemberCheck = new RoomMemberCheck()
+const roomMemberCheck = new RoomMemberCheck(prisma)
 // export const roomHandler = async (payload, ack) => {
 //     const roomId = parseInt(payload.roomId)
 //     if(!roomId) return (new Error("Room id is missin!"))
@@ -16,21 +18,23 @@ const roomMemberCheck = new RoomMemberCheck()
 // }
 
 export const registerRoomHandlers = (io, socket) => {
-    socket.on("joinRoom", async(payload, ack) => {
+    socket.on("joinRoom", async (payload, ack) => {
         try {
             const roomId = parseInt(payload?.roomId)
-            if(Number.isNaN(roomId)) throw new ApiError(400, "room Id is missing!")
+            if (Number.isNaN(roomId)) throw new ApiError(400, "room Id is missing!")
+            const userId = socket.user.id
+            console.log(userId)
             const membership = await roomMemberCheck.execute(roomId, socket.user.id)
-            if(membership === null) throw new ApiError(403, "You are not a member of this room!")
-            
+            if (membership === null) throw new ApiError(403, "You are not a member of this room!")
+
             socket.join(`room:${roomId}`)
-            ack?.({success: true})
-        } catch(err) {
-            if(!err.statusCode) console.log(err)
+            ack?.({ success: true })
+        } catch (err) {
+            if (!err.statusCode) console.log(err)
             ack?.({
-        success: false,
-        
-        })
+                success: false,
+                message: err.statusCode < 500 ? err.message : "Internal server error"
+            })
         }
     })
 }
