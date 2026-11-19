@@ -33,32 +33,6 @@ export class FetchRoomMessage {
                 }
             }
         })
-
-        // const messages = await this.prisma.roomMember.findMany({
-        //     where: {
-        //         roomId
-        //     },
-        //     select: {
-        //         roomId: true,
-        //         user: {
-        //             select: {
-        //                 id: true,
-        //                 userName: true,
-        //                 profilePic: true,
-        //                 createdAt: true
-        //             }
-        //         },
-        //         message: {
-        //             select: {
-        //                 id: true,
-        //                 content: true,
-        //                 roomMemberId: true,
-        //                 createdAt: true,
-        //                 updatedAt: true
-        //             }
-        //         }
-        //     }
-        // })
         const hasMore = rows.length > take
         const messages = hasMore ? rows.slice(0, take) : rows
         const nextbefore = hasMore ? messages[messages.length - 1].id : null
