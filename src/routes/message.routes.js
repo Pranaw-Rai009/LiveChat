@@ -5,6 +5,6 @@ import { createMessageController, fetchRoomMessageController } from "../controll
 const router = Router()
 
 router.post("/:roomId", authAccess, createMessageController)
-router.get("/:roomId", authAccess, fetchRoomMessageController)
+router.get("/:roomId/message", authAccess, fetchRoomMessageController)
 
 export default router

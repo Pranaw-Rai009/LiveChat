@@ -8,10 +8,10 @@ export class FetchRoomMessage {
         this.roomMembership = new RoomMembership(prisma)
     }
 
-    async execute(userId, roomId, limit = 5, before) {
+    async execute(userId, roomId, limit, before) {
         const isMember = await this.roomMembership.execute(userId, roomId)
         if (!isMember) throw new ApiError(404, "You are not a room member!")
-        // sets limit at 5 to 45
+        // sets limit at 1 to 45
         const take = Math.min(Math.max(limit, 1), 45)
 
         const rows = await this.prisma.message.findMany({

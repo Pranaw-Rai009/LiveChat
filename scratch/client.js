@@ -20,7 +20,7 @@ socket.on("newMessage", (msg) => console.log("New message: ", msg))
 
 socket.on("connect", () => {
     console.log("Connected as: ", socket.id)
-    socket.emit("joinRoom", {roomId: 9}, (res) => {
+    socket.emit("joinRoom", {roomId: 10}, (res) => {
         console.log("JoinRoom: ", res)
         if(msg) {
             socket.emit("sendMessage", {roomId: Number(roomId), content: msg}, (res) => console.log("send:", res))
