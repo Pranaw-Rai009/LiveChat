@@ -7,7 +7,7 @@ import userRouter  from './routes/user.routes.js'
 import userSessionRouter from './routes/userSession.routes.js'
 import roomRouter from './routes/room.routes.js'
 import roomMemberRouter from './routes/roomMember.routes.js'
-import messageRouter from './routes/message.routes.js'
+import messageRouter from './routes/message.routes.js '
 
 const app = express()
 const httpServer = createServer(app)
