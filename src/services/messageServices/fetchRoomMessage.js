@@ -26,7 +26,10 @@ export class FetchRoomMessage {
                 content: true,
                 createdAt: true,
                 roomMember: {
-                    select: { id: true, userId: true, profilePic: true }
+                    select: {
+                        id: true,
+                    },
+                    select: { user: {select: {id: true, userName: true, profilePic: true}} }
                 }
             }
         })
