@@ -1,3 +1,4 @@
+import { Profiler } from "react";
 import ApiError from "../../utils/apiError.util.js";
 import { RoomMembership } from "../accessServices/roomMembership.js";
 
@@ -7,35 +8,58 @@ export class FetchRoomMessage {
         this.roomMembership = new RoomMembership(prisma)
     }
 
-    async execute(userId, roomId) {
+    async execute(userId, roomId, limit = 5, before) {
         const isMember = await this.roomMembership.execute(userId, roomId)
         if (!isMember) throw new ApiError(404, "You are not a room member!")
-        const messages = await this.prisma.roomMember.findMany({
+        // sets limit at 5 to 45
+        const take = Math.min(Math.max(limit, 1), 45)
+
+        const rows = await this.prisma.message.findMany({
             where: {
-                roomId
+                roomMember: { roomId },
+                ...(before ? { id: { lt: before } } : {})
             },
+            orderBy: { id: "desc" },
+            take: take + 1,
             select: {
-                roomId: true,
-                user: {
-                    select: {
-                        id: true,
-                        userName: true,
-                        profilePic: true,
-                        createdAt: true
-                    }
-                },
-                message: {
-                    select: {
-                        id: true,
-                        content: true,
-                        roomMemberId: true,
-                        createdAt: true,
-                        updatedAt: true
-                    }
+                id: true,
+                content: true,
+                createdAt: true,
+                roomMember: {
+                    select: { id: true, userId: true, profilePic: true }
                 }
             }
         })
-        if(messages === null) return null
-        return messages
+
+        // const messages = await this.prisma.roomMember.findMany({
+        //     where: {
+        //         roomId
+        //     },
+        //     select: {
+        //         roomId: true,
+        //         user: {
+        //             select: {
+        //                 id: true,
+        //                 userName: true,
+        //                 profilePic: true,
+        //                 createdAt: true
+        //             }
+        //         },
+        //         message: {
+        //             select: {
+        //                 id: true,
+        //                 content: true,
+        //                 roomMemberId: true,
+        //                 createdAt: true,
+        //                 updatedAt: true
+        //             }
+        //         }
+        //     }
+        // })
+        const hasMore = rows.length > take
+        const messages = hasMore ? rows.slice(0, take) : rows
+        const nextbefore = hasMore ? messages[messages.length - 1].id : null
+        // if(messages === null) return null
+        return { messages, hasMore, nextbefore }
     }
 }
