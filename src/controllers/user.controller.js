@@ -58,7 +58,14 @@ export const fetchAllUsersController = asyncHandler(async (req, res) => {
 const userAccountDelete = new DeleteUser(prisma)
 
 export const deleteUserAccountController = asyncHandler(async (req, res) => {
+    const incomingRefreshToken = req.cookies.newRefreshToken
+    if (!incomingRefreshToken) throw new ApiError(400, "RefreshToken missing!")
     const userId = req.owner
     const isDeleted = await userAccountDelete.execute(userId)
+    res.clearCookie("newRefreshToken", {
+        httpOnly: true,
+        secure: true
+    })
+    getIO()?.in(`user:${userId}`).disconnectSockets(true)
     res.status(200).json({ message: "User Disabled" })
 })
