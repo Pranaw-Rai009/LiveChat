@@ -6,7 +6,7 @@ export class LogOut {
     }
 
     async execute(refreshToken) {
-            await this.prisma.refreshToken.deleteMany({
+            const removeRefreshToken = await this.prisma.refreshToken.deleteMany({
                 where: {
                     token: refreshToken
                 }

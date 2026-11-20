@@ -42,10 +42,11 @@ export const refreshAccessTokenController = asyncHandler(async (req, res) => {
 
 const logoutUser = new LogOut(prisma)
 export const logOutController = asyncHandler(async (req, res) => {
-    const incomingRefreshToken = req.cookied.refreshToken
+    const incomingRefreshToken = req.cookies.newRefreshToken
     if (!incomingRefreshToken) throw new ApiError(400, "RefreshToken missing!")
+        console.log(incomingRefreshToken)
     await logoutUser.execute(incomingRefreshToken)
-    res.clearCookie("refreshToken", {
+    res.clearCookie("newRefreshToken", {
         httpOnly: true,
         secure: true
     })
