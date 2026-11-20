@@ -1,5 +1,5 @@
 import { io } from "socket.io-client"
-const [token, roomId, msg] = process.argv.slice(2)
+const [token, roomId, msg, reason] = process.argv.slice(2)
 const socket = io("http://localhost:2001", { auth: { token } })
 
 // socket.on("connect", () => {
@@ -26,7 +26,13 @@ socket.on("connect", () => {
             socket.emit("sendMessage", {roomId: Number(roomId), content: msg}, (res) => console.log("send:", res))
         }
     })
+    socket.emit("leaveRoom", {roomId}, (res) => {
+      console.log("Room left: ", roomId)
+    })
 })
 
-socket.on("disconnect", () => console.log("disconnected"))
+socket.on("disconnect", (reason) => {
+  console.log("Disconnected:", socket.id, reason)
+})
 
+//  here all are mistakes

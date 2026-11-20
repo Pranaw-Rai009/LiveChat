@@ -3,6 +3,7 @@ import httpServer from '../app.js'
 import { socketAuth } from './socketMiddleware/socketAuth.js'
 import { registerRoomHandlers } from './socketHandler/roomHandler.js'
 import {registerMessageHandlers} from './socketHandler/sendMessage.js'
+import { registerLeaveHandlers } from './socketHandler/leaveRoomHandler.js'
 
 export const initSocket = (httpServer) => {
     const io = new Server(httpServer, {
@@ -15,6 +16,7 @@ export const initSocket = (httpServer) => {
 
         registerRoomHandlers(io, socket)
         registerMessageHandlers(io, socket)
+        registerLeaveHandlers(io, socket)
 
         socket.on("disconnect", () => {
             console.log("Disconnected: ", socket.id)
