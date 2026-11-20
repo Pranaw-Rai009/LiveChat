@@ -21,7 +21,7 @@ export const fetchRoomMessageController = asyncHandler(async(req, res) => {
     if(!roomId) throw new ApiError(400, "Room Id is missing!")
     const  limit = parseInt(req.query.limit)
     
-    const before = 3;
-    const allMessage = await fetchRoomMessage.execute(req.user.id, roomId, limit)
+    const before = 16;
+    const allMessage = await fetchRoomMessage.execute(req.user.id, roomId, limit, before)
     res.status(200).json({message: "All message: ", allMessage})
 })
