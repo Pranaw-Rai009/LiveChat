@@ -6,6 +6,7 @@ import { UpdateProfilePicture } from "../services/userServices/updateProfilePict
 import { FetchAllUsers } from "../services/userServices/getAllUser.js"
 import { DeleteUser } from "../services/userServices/deleteUser.js"
 import { UpdateUserPassword } from "../services/userServices/updatePassword.js"
+import { getIO } from '../socket/io.js'
 
 const userRegister = new RegisterUser(prisma)
 
