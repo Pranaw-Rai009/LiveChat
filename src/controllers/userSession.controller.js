@@ -7,11 +7,7 @@ import { LogOut } from "../services/userSessionServices/logout.js";
 import ms from "ms";
 
 
-import app from "../app.js";
-
-
 const userLogin = new UserLogin(prisma)
-
 export const loginUserController = asyncHandler(async (req, res) => {
     const { email, password } = req.body
     if (!email) throw new ApiError(400, "Email is missing!")
