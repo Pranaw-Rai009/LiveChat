@@ -1,4 +1,5 @@
-import {uploadOnCloudinary} from '../../utils/cloudinary.util.js'
+// import {uploadOnCloudinary} from '../../utils/cloudinary.util.js'/
+import {uploadOnCloudinary} from "../../utils/cloudinary.util.js"
 import  ApiError  from '../../utils/apiError.util.js'
 
 export class UpdateProfilePicture {
@@ -7,9 +8,11 @@ export class UpdateProfilePicture {
     }
 
     async execute(localFilePath, userId) {
+        console.log(localFilePath)
         const uploadResult = await uploadOnCloudinary(localFilePath)
-        if(!uploadResult) throw new ApiError(500, "Failed to upload the image to cloudinary!")
-        const newProfilePicture = await this.prisma.user.update({
+        console.log(uploadResult)
+        try {  
+                const newProfilePicture = await this.prisma.user.update({
             where: {
                 id: userId
             },
@@ -17,7 +20,9 @@ export class UpdateProfilePicture {
                 profilePic: uploadResult.secure_url
             }
         })
-        if(!newProfilePicture) throw new ApiError(500, "Couln't upload the image to cloudinary!")
+        } catch(err) {
+            throw err
+        }
         return newProfilePicture.profilePic
     }
 }
