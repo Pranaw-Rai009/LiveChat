@@ -4,11 +4,11 @@ A Real Time Chatting App Backend - Implemented WebSockets
 End Poin Urls
 
 # USER
-Register User: http://localhost:2001/api/user/register 
-Login: http://localhost:2001/api/session/login
-Fetch All User: http://localhost:2001/api/user/
-Update Profile Picture: http://localhost:2001/api/user/update/:userId/profile
-Update User Password: http://localhost:2001/api/user/update/:accId/password
+Register User: POST /api/user/register 
+Login: POST /api/session/login
+Fetch All User: GET/api/user/
+Update Profile Picture:PATCH /api/user/update/:userId/profile
+Update User Password: POST/api/user/update/:accId/password
 Refresh Access Token: http://localhost:2001/api/session/refreshAccToken
 Delete User Ac:  http://localhost:2001/api/user/delete/:userId
 
