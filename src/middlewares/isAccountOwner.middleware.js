@@ -13,9 +13,9 @@ export const isAcOwner = asyncHandler(async (req, res, next) => {
             id: parseInt(accId)
         }
     })
-    if(!isAccountId) throw new ApiError(404, "Id not found!")
+    if(isAccountId === null) throw new ApiError(404, "Account with this Id not found!")
     const isOwner = isAccountId.id === userId
     if(!isOwner) throw new ApiError(401, "Your are not the account owner!")
-    req.owner = isAccountId.id
+    req.owner = isAccountId
     next()
 })

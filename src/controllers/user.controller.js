@@ -9,21 +9,18 @@ import { UpdateUserPassword } from "../services/userServices/updatePassword.js"
 import { getIO } from '../socket/io.js'
 
 const userRegister = new RegisterUser(prisma)
-
 export const registerUserController = asyncHandler(async (req, res) => {
     const { userName, email, password } = req.body
     if (!userName) throw new ApiError(400, "Username is misisng!")
     if (!email) throw new ApiError(400, "Email is missing!")
     if (!password) throw new ApiError(400, "Password is missing!")
-    const userData = { userName, email, password}
+    const userData = { userName, email, password }
     const user = await userRegister.execute(userData)
     if (!user) throw new ApiError(500, "User  NOT created")
     res.status(201).json({ User: user })
 })
 
-
 const userProfilePicUpdate = new UpdateProfilePicture(prisma)
-
 export const updateUserProfileController = asyncHandler(async (req, res) => {
     const userId = req.user.id
     if (!req.file) throw new ApiError(400, "No image uploaded!")
@@ -36,19 +33,19 @@ export const updateUserProfileController = asyncHandler(async (req, res) => {
 
 
 const userPasswordUpdate = new UpdateUserPassword(prisma)
-
 export const updateUserPasswordController = asyncHandler(async (req, res) => {
     const { oldPassword, newPassword1, newPassword2 } = req.body
-    const userId = req.owner
     if (!oldPassword) throw new ApiError(400, "Old password is empty")
     if (!newPassword1) throw new ApiError(400, "New Password1 is empty")
     if (!newPassword2) throw new ApiError(400, "New Password2 is empty")
+    if (newPassword1.length < 12) throw new ApiError(400, "Password1 must be greater than 12 character!")
+    if (newPassword2.length < 12) throw new ApiError(400, "Password2 must be greater than 12 character!")
 
-    const updatedPassword = await userPasswordUpdate.execute(oldPassword, newPassword1, newPassword2, userId)
+    await userPasswordUpdate.execute(oldPassword, newPassword1, newPassword2, req.owner)
     res.status(201).json({ message: "Password updated!" })
 })
-const usersFetch = new FetchAllUsers(prisma)
 
+const usersFetch = new FetchAllUsers(prisma)
 export const fetchAllUsersController = asyncHandler(async (req, res) => {
     const allUsersOutput = await usersFetch.execute()
     if (allUsersOutput === null) res.status(200).json({ message: "No users created" })
@@ -56,7 +53,6 @@ export const fetchAllUsersController = asyncHandler(async (req, res) => {
 })
 
 const userAccountDelete = new DeleteUser(prisma)
-
 export const deleteUserAccountController = asyncHandler(async (req, res) => {
     const incomingRefreshToken = req.cookies.newRefreshToken
     if (!incomingRefreshToken) throw new ApiError(400, "RefreshToken missing!")
