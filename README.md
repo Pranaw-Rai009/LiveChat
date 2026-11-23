@@ -9,12 +9,11 @@ Login: POST /api/session/login
 Fetch All User: GET/api/user/
 Update Profile Picture:PATCH /api/user/update/:userId/profile
 Update User Password: POST/api/user/update/:accId/password
-Refresh Access Token: http://localhost:2001/api/session/refreshAccToken
+Refresh Access Token: POST /api/session/refreshAccToken
 Delete User Ac:  http://localhost:2001/api/user/delete/:userId
 
 # ROOM
-Create Room: http://localhost:2001/api/room/create
-Fetch All Rooms: http://localhost:2001/api/room/fetch
+Create Room: POST /api/room/create
 Fetch A Room: http://localhost:2001/api/room/fetchA/:roomId
 Update Room Admin: http://localhost:2001/api/room/updateAdmin/:roomId
 Delete Room: http://localhost:2001/api/room/delete/:roomId  // Not completed

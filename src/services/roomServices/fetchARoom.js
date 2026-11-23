@@ -8,7 +8,7 @@ export class FetchARoomDetail {
     async execute(roomId) {
         const roomData = await this.prisma.room.findUnique({
             where: {
-                id: parseInt(roomId)
+                id: roomId
             }
         })
         if(roomData === null) throw new ApiError(404, "Room with this id doesn't exist!")

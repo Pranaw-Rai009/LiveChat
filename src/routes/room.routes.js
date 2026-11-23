@@ -4,10 +4,11 @@ import {authAccess} from '../middlewares/authAccess.middleware.js'
 const router = Router()
 
 router.post("/create", authAccess, createRoomController)
+router.get("/fetch/:roomId", authAccess, fetchARoomController)
 router.delete("/delete/:roomId", authAccess, deleteRoomController)
-router.get("/fetch", authAccess, fetchAllRoomController)
-router.get("/fetchA/:roomId", authAccess, fetchARoomController)
 router.patch("/update/:roomId/admin", authAccess, updateRoomAdminController)
 
+// Admin
+router.get("/fetch/all", authAccess, fetchAllRoomController)
 
 export default router
