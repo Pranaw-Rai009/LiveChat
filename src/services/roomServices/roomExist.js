@@ -1,5 +1,3 @@
-import ApiError from "../../utils/apiError.util.js";
-
 export class RoomExist {
     constructor(prisma) {
         this.prisma = prisma

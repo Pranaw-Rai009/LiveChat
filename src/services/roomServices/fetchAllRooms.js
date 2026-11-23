@@ -1,7 +1,6 @@
-// import { userRole } from "../../generated/prisma/enums.js";
 import ApiError from "../../utils/apiError.util.js";
 
-export class FetchRoom {
+export class FetchRooms {
     constructor(prisma) {
         this.prisma = prisma
     }

@@ -1,28 +1,28 @@
 import ApiError from "../../utils/apiError.util.js";
 import { UpdateAdminToMember } from "../roomMemberServices/updateAdminToMember.js";
-import {UpdateMemberToAdmin} from "../roomMemberServices/updateMemberToAdmin.js"
+import { UpdateMemberToAdmin } from "../roomMemberServices/updateMemberToAdmin.js"
 import { RoomAdminCheck } from "../accessServices/isRoomAdmin.js";
 import { RoomMemberCheck } from "../accessServices/isRoomMember.js";
+import { RoomExist } from "../../services/roomServices/roomExist.js"
 
-// const isRoomAdminCheck = new RoomAdminCheck()
-
-const adminToMemberUpdate = new UpdateAdminToMember()
-const memberToAdminUpdate = new UpdateMemberToAdmin()
 export class UpdateRoomAdmin {
     constructor(prisma) {
         this.prisma = prisma
         this.isRoomAdminCheck = new RoomAdminCheck(prisma)
         this.isRoomMemberCheck = new RoomMemberCheck(prisma)
+        this.adminToMemberUpdate = new UpdateAdminToMember()
+        this.memberToAdminUpdate = new UpdateMemberToAdmin()
+        this.roomExistCheck = new RoomExist(prisma)
     }
 
     async execute(roomId, adminId, newAdminId) {
+        const roomExist = await this.roomExistCheck.execute(roomId)
+        if (roomExist == null) throw new ApiError(404, "Room with this id doesn't exist")
         const isRoomAdmin = await this.isRoomAdminCheck.execute(roomId, adminId)
-        if(isRoomAdmin === null)  throw new ApiError(404, "Admin not verified!")
-        if(!isRoomAdmin) throw new ApiError(500, "Error occured while verifying admin!")
+        if (isRoomAdmin === null) throw new ApiError(404, "You're not the Admin!")
 
-        const isRoomMember = await this.isRoomMemberCheck.execute(roomId, newAdminId)
-        if(isRoomMember === null) throw new ApiError(404, "User is not in group")
-        if(!isRoomMember) throw new ApiError(500, "Error occured while verifying room member!")
+        const isNextAdminRoomMember = await this.isRoomMemberCheck.execute(roomId, newAdminId)
+        if (isNextAdminRoomMember === null) throw new ApiError(404, "User is not in this room")
 
         const newAdminData = await this.prisma.$transaction(async (tx) => {
             const updateToAdmin = await tx.room.update({
@@ -33,9 +33,9 @@ export class UpdateRoomAdmin {
                     adminId: newAdminId
                 }
             })
-            const updateRoleAdminToMember = await adminToMemberUpdate.execute(tx, adminId, roomId)
-            const updateRoleMemberToAdmin = await memberToAdminUpdate.execute(tx, newAdminId, roomId)
-            return {updateToAdmin, updateRoleAdminToMember, updateRoleMemberToAdmin}
+            const updateRoleAdminToMember = await this.adminToMemberUpdate.execute(tx, adminId, roomId)
+            const updateRoleMemberToAdmin = await this.memberToAdminUpdate.execute(tx, newAdminId, roomId)
+            return { updateToAdmin, updateRoleAdminToMember, updateRoleMemberToAdmin }
         })
         return newAdminData
     }

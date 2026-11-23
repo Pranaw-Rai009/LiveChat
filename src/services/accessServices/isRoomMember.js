@@ -7,7 +7,8 @@ export class RoomMemberCheck {
         const isMember = await this.prisma.roomMember.findUnique({
             where: {
                 roomId_userId: {roomId, userId},
-                role: "MEMBER"
+                role: "MEMBER",
+                leftAt: null
             }
         })
         if(isMember === null) return null
