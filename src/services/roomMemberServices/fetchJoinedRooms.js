@@ -1,7 +1,3 @@
-// import { join } from "@prisma/client/runtime/client";
-import ApiError from "../../utils/apiError.util.js";
-import { RoomAdminCheck } from "../accessServices/isRoomAdmin.js";
-
 export class FetchJoinedRooms {
     constructor(prisma) {
         this.prisma = prisma

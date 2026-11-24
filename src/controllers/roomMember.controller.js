@@ -31,10 +31,11 @@ const roomNewMember = new AddToRoom(prisma)
 export const addUserToARoomController = asyncHandler(async(req, res) => {
     const roomId = parseInt(req.params.roomId)
     if(!roomId) throw new ApiError(400, "RoomId cannot be empty!")
-    const {userId} = req.body
-    if(!userId) throw new ApiError(400, "User Id is missing!")
+    const {newUserId} = req.body
+    if(!newUserId) throw new ApiError(400, "User Id is missing!")
+    const adminId = req.user.id
     const role = "MEMBER"
-    const newMember = await roomNewMember.execute(userId, roomId, role)
+    const newMember = await roomNewMember.execute(newUserId, roomId, role, adminId)
     res.status(200).json({message: "Added to room", newMember})
 })
 
