@@ -1,3 +1,4 @@
+import { Prisma } from "../../generated/prisma/client.js";
 import ApiError from "../../utils/apiError.util.js";
 import { RoomAdminCheck } from "../accessServices/isRoomAdmin.js";
 import { RoomExist } from "../roomServices/roomExist.js";
@@ -23,13 +24,23 @@ export class AddToRoom {
         })
         if(userExist === null) throw new ApiError(404, "Invalid new User Id")
 
-        const newRoomMember = await this.prisma.roomMember.create({
+        let newRoomMember
+        try {
+            newRoomMember = await this.prisma.roomMember.create({
             data: {
                 roomId,
                 userId: newUserId,
                 role
             }
         })
+        }catch(err) {
+            if(err instanceof Prisma.PrismaClientKnownRequestError) {
+                if(err.code === "P2002") {
+                    throw new ApiError(409, "Member already exist!")
+                }
+            }
+            throw err
+        }
         return newRoomMember
     }
 }
