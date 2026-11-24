@@ -1,7 +1,7 @@
 import ApiError from "../utils/apiError.util.js";
 import { asyncHandler } from "../utils/asyncHandler.util.js";
 import { prisma } from "../db/dbConnect.js";
-import  {DeleteRoomMember} from "../services/roomMemberServices/deleteRoomMember.js"
+import { DeleteRoomMember } from "../services/roomMemberServices/deleteRoomMember.js"
 import { ListAllMemberOfARoom } from "../services/roomMemberServices/listAllMembersOfARoom.js";
 import { AddToRoom } from "../services/roomMemberServices/addToARoom.js";
 import { JoinRoom } from "../services/roomMemberServices/joinARoom.js";
@@ -9,61 +9,71 @@ import { FetchJoinedRooms } from "../services/roomMemberServices/fetchJoinedRoom
 import { LeaveRoom } from "../services/roomMemberServices/leaveRoom.js";
 
 const roomMemberDelete = new DeleteRoomMember(prisma)
-export const deleteRoomMemberController = asyncHandler(async(req, res) => {
-    const roomId =  parseInt(req.params.roomId)
-    if(!roomId) throw new ApiError(400, "Room id is mising!")
+export const deleteRoomMemberController = asyncHandler(async (req, res) => {
+    const roomId = parseInt(req.params.roomId)
+    if (!roomId) throw new ApiError(400, "Room id is mising!")
     const userId = parseInt(req.params.userId)
     const deletedRoomMember = roomMemberDelete.execute(userId, roomId)
-    res.status(200).json({message: "Room member removed"})
+    res.status(200).json({ message: "Room member removed" })
 })
 
 const roomMembersListOfARoom = new ListAllMemberOfARoom(prisma)
-export const listAllMemberOfARoomController = asyncHandler(async(req, res) => {
+export const listAllMemberOfARoomController = asyncHandler(async (req, res) => {
     const roomId = parseInt(req.params.roomId)
-    if(!roomId) throw new ApiError(400, "Room Id is missing!")
+    if (!roomId) throw new ApiError(400, "Room Id is missing!")
     const userId = req.user.id
 
     const allMemberList = await roomMembersListOfARoom.execute(roomId, userId)
-    res.status(200).json({message: "All members:", allMemberList})
+    res.status(200).json({ message: "All members:", allMemberList })
 })
 
 const roomNewMember = new AddToRoom(prisma)
-export const addUserToARoomController = asyncHandler(async(req, res) => {
+export const addUserToARoomController = asyncHandler(async (req, res) => {
     const roomId = parseInt(req.params.roomId)
-    if(!roomId) throw new ApiError(400, "RoomId cannot be empty!")
-    const {newUserId} = req.body
-    if(!newUserId) throw new ApiError(400, "User Id is missing!")
+    if (!roomId) throw new ApiError(400, "RoomId cannot be empty!")
+    const { newUserId } = req.body
+    if (!newUserId) throw new ApiError(400, "User Id is missing!")
     const adminId = req.user.id
     const role = "MEMBER"
     const newMember = await roomNewMember.execute(newUserId, roomId, role, adminId)
-    res.status(200).json({message: "Added to room", newMember})
+    res.status(200).json({ message: "Added to room", newMember })
 })
 
 const roomJoin = new JoinRoom(prisma)
-export const joinRoomController = asyncHandler(async(req, res) => {
+export const joinRoomController = asyncHandler(async (req, res) => {
     const roomId = parseInt(req.params.roomId)
-    if(!roomId) throw  new ApiError(400, "Room Id is required!")
+    if (!roomId) throw new ApiError(400, "Room Id is required!")
     const userId = req.user.id
     const defRole = "MEMBER"
     const join = await roomJoin.execute(userId, roomId, defRole)
-    res.status(200).json({message: `Joined Room ${roomId}`})
+    res.status(200).json({ message: `Joined Room ${roomId}` })
 })
 
 
 const fetchJoinedRooms = new FetchJoinedRooms(prisma)
-export const fetchMyRoomsController = asyncHandler(async(req, res) => {
+export const fetchMyRoomsController = asyncHandler(async (req, res) => {
     const userId = req.user.id
-    if(!userId) throw new ApiError(400, "User Id is required!")
     const rooms = await fetchJoinedRooms.execute(userId)
-    res.status(200).json({message: "All Rooms", rooms})
+    // res.status(200).json({ rooms })
+    const joinedRooms = await rooms.map((membership) => ({
+        id: membership.room.id,
+        name: membership.room.name,
+        profilePic: membership.room.profilePic,
+        adminId: membership.room.adminId,
+        membership_data: {
+            memberId: membership.id,
+            userId: membership.userId
+        }
+        }))
+        res.status(200).json({JoinedRooms: joinedRooms})
 })
 
 
 const leaveRoom = new LeaveRoom(prisma)
-export const leaveRoomController = asyncHandler(async(req, res) => {
+export const leaveRoomController = asyncHandler(async (req, res) => {
     const userId = req.user.id
     const roomId = parseInt(req.params.roomId)
-    if(!roomId) throw new ApiError(400, "Room Id is missing!")
-    await leaveRoom.execute(userId, roomId) 
-    res.status(200).json({message: "Room Left"})
+    if (!roomId) throw new ApiError(400, "Room Id is missing!")
+    await leaveRoom.execute(userId, roomId)
+    res.status(200).json({ message: "Room Left" })
 })
