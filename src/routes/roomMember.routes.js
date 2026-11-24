@@ -7,9 +7,9 @@ const router = Router()
 router.get("/list/:roomId", authAccess, listAllMemberOfARoomController)
 router.post("/add/:roomId/member", authAccess, addUserToARoomController)
 router.get("/room", authAccess, fetchMyRoomsController)
+router.post("/join/:roomId", authAccess, joinRoomController)
 
 router.delete("/delete/:roomId/member/:userId", authAccess, deleteRoomMemberController)
-router.post("/join/:roomId", authAccess, joinRoomController)
 router.post("/leave/:roomId", authAccess, leaveRoomController)
 
 
