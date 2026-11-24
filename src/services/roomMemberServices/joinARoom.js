@@ -8,7 +8,8 @@ export class JoinRoom {
         this.checkRoomExist = new RoomExist(prisma)
     }
     async execute(userId, roomId, role) {
-        await this.checkRoomExist.execute(roomId)
+        const roomExist = await this.checkRoomExist.execute(roomId)
+        if(roomExist === null) throw new ApiError(404, "Invalid Room Id")
         try {
             return await this.prisma.roomMember.create({
                 data: {
