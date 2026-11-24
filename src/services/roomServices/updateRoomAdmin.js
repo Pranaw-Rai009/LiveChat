@@ -4,6 +4,7 @@ import { UpdateMemberToAdmin } from "../roomMemberServices/updateMemberToAdmin.j
 import { RoomAdminCheck } from "../accessServices/isRoomAdmin.js";
 import { RoomMemberCheck } from "../accessServices/isRoomMember.js";
 import { RoomExist } from "../../services/roomServices/roomExist.js"
+import { useId } from "react";
 
 export class UpdateRoomAdmin {
     constructor(prisma) {
@@ -16,6 +17,12 @@ export class UpdateRoomAdmin {
     }
 
     async execute(roomId, adminId, newAdminId) {
+        const nextAdminExist = await this.prisma.user.findUnique({
+            where: {
+                id: newAdminId
+            }
+        })
+        if(nextAdminExist === null) throw new ApiError(404, "Invalid new admin Id!")
         const roomExist = await this.roomExistCheck.execute(roomId)
         if (roomExist == null) throw new ApiError(404, "Room with this id doesn't exist")
         const isRoomAdmin = await this.isRoomAdminCheck.execute(roomId, adminId)

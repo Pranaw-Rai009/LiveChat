@@ -1,5 +1,3 @@
-// import ApiError from "../../utils/apiError.util,js";
-
 export class RoomMembership {
     constructor(prisma) {
         this.prisma = prisma
@@ -12,8 +10,7 @@ export class RoomMembership {
                 leftAt: null
             }
         })  
-        // console.log(membership)
-        // if(membership.leftAt !== null) return false
+        if(membership === null) return null
         return membership
     }
 }

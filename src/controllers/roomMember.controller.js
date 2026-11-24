@@ -21,7 +21,9 @@ const roomMembersListOfARoom = new ListAllMemberOfARoom(prisma)
 export const listAllMemberOfARoomController = asyncHandler(async(req, res) => {
     const roomId = parseInt(req.params.roomId)
     if(!roomId) throw new ApiError(400, "Room Id is missing!")
-    const allMemberList = await roomMembersListOfARoom.execute(roomId)
+    const userId = req.user.id
+
+    const allMemberList = await roomMembersListOfARoom.execute(roomId, userId)
     res.status(200).json({message: "All members:", allMemberList})
 })
 
