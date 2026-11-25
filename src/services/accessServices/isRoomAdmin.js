@@ -14,4 +14,4 @@ export class RoomAdminCheck {
         if(isAdmin === null) return null
         return isAdmin
     }
-}
+} 

@@ -6,7 +6,8 @@ export class FetchJoinedRooms {
     async execute(userId) {
         const joinedRooms = await this.prisma.roomMember.findMany({
             where: {
-                userId
+                userId,
+                leftAt: null
             },
             select: {
                 room: true,
@@ -15,7 +16,7 @@ export class FetchJoinedRooms {
                 userId: true
             },
         })
-        if(joinedRooms.length === 0) return null
+        // if(joinedRooms.length === 0) return null
         return joinedRooms
     }
 }
