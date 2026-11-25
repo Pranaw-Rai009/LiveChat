@@ -10,9 +10,6 @@ export class SaveMessage {
 
     
     async execute(msg, roomMemberId) {
-        // sendMessage socket handler checks it so , we dont need it here
-        // const member = await this.roomMembershipCheck.execute(userId, roomId)
-        // if(member === null) throw new ApiError(404, "You are not a room member")
         const newMsg = await this.prisma.message.create({
             data: {
                 content: msg,

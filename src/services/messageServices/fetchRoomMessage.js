@@ -37,6 +37,7 @@ export class FetchRoomMessage {
         const messages = hasMore ? rows.slice(0, take) : rows
         const nextbefore = hasMore ? messages[messages.length - 1].id : null
         // if(messages === null) return null
+        console.log(messages)
         return { messages, hasMore, nextbefore }
     }
 }
