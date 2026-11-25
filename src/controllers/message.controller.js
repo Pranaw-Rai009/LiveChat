@@ -33,5 +33,5 @@ export const fetchRoomMessageController = asyncHandler(async(req, res) => {
         userName: msg.roomMember.user.userName,
         profilePic: msg.roomMember.user.profilePic
     }))
-    res.status(200).json({message: "All message: ", data})
+    res.status(200).json({message: "All message: ", data, hasMore, nextbefore})
 })
