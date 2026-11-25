@@ -28,10 +28,10 @@ export class FetchRoomMessage {
                 roomMember: {
                     select: {
                         id: true,
-                    },
-                    select: { user: {select: {id: true, userName: true, profilePic: true}} }
-                }
-            }
+                        user: { select: { id: true, userName: true, profilePic: true } }
+        }
+    }
+}
         })
         const hasMore = rows.length > take
         const messages = hasMore ? rows.slice(0, take) : rows

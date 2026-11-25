@@ -23,5 +23,15 @@ export const fetchRoomMessageController = asyncHandler(async(req, res) => {
     
     const before = 185;
     const allMessage = await fetchRoomMessage.execute(req.user.id, roomId, limit, before)
-    res.status(200).json({message: "All message: ", allMessage})
+    const {messages, hasMore, nextbefore} = allMessage
+    const data = messages.map((msg) => ({
+        id: msg.id,
+        content: msg.content,
+        createdAt: msg.createdAt,
+        memberId: msg.roomMember.id,
+        userId: msg. roomMember.user.id,
+        userName: msg.roomMember.user.userName,
+        profilePic: msg.roomMember.user.profilePic
+    }))
+    res.status(200).json({message: "All message: ", data})
 })
