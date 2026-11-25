@@ -13,21 +13,7 @@
                 leftAt: null
             }
         })
-    //     if(allRoomMembership.length === 0) {
-    //         const updateUserStatus =  await tx.user.update({
-    //         where: {
-    //             id: userId
-    //         }, 
-    //         data: {
-    //            userName: `deleted_${userId}`,
-    //                 email: `deleted_${userId}@deleted.invalid`,
-    //                 password: `deleted_${userId}`,
-    //                 profilePic: null,
-    //                 globalStatus: "DISABLED",
-    //         }
-    //     })
-    // }
-
+        
         for (const roomMember of allRoomMembership) {
             const count = await tx.roomMember.count({
                 where: {

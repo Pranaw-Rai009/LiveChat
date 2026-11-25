@@ -22,7 +22,7 @@ export const fetchRoomMessageController = asyncHandler(async(req, res) => {
     const  limit = parseInt(req.query.limit)
     
     const before = 185;
-    const allMessage = await fetchRoomMessage.execute(req.user.id, roomId, limit, before)
+    const allMessage = await fetchRoomMessage.execute(req.user.id, roomId, limit)
     const {messages, hasMore, nextbefore} = allMessage
     const data = messages.map((msg) => ({
         id: msg.id,
