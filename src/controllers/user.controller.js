@@ -56,7 +56,8 @@ const userAccountDelete = new DeleteUser(prisma)
 export const deleteUserAccountController = asyncHandler(async (req, res) => {
     const incomingRefreshToken = req.cookies.newRefreshToken
     if (!incomingRefreshToken) throw new ApiError(400, "RefreshToken missing!")
-    const userId = req.owner
+    const userId = req.owner.id
+console.log(userId)
     const isDeleted = await userAccountDelete.execute(userId)
     res.clearCookie("newRefreshToken", {
         httpOnly: true,

@@ -1,5 +1,3 @@
-// import { UserScalarFieldEnum } fr/om "../../generated/prisma/internal/prismaNamespace"
-
  export class DeleteUser {
     constructor(prisma) {
         this.prisma = prisma
@@ -9,27 +7,28 @@
         await this.prisma.$transaction(async(tx) => {
         const allRoomMembership = await tx.roomMember.findMany({
             where: {
-                userId,
+                user: {
+                    id: userId
+                },
                 leftAt: null
             }
         })
-        if(allRoomMembership === null) {
-            const updateUserStatus =  await tx.user.update({
-            where: {
-                id: userId
-            }, 
-            data: {
-               userName: `deleted_${userId}`,
-                    email: `deleted_${userId}@deleted.invalid`,
-                    password: `deleted_${userId}`,
-                    profilePic: null,
-                    globalState: "DISABLED",
-            }
-        })
-    }
+    //     if(allRoomMembership.length === 0) {
+    //         const updateUserStatus =  await tx.user.update({
+    //         where: {
+    //             id: userId
+    //         }, 
+    //         data: {
+    //            userName: `deleted_${userId}`,
+    //                 email: `deleted_${userId}@deleted.invalid`,
+    //                 password: `deleted_${userId}`,
+    //                 profilePic: null,
+    //                 globalStatus: "DISABLED",
+    //         }
+    //     })
+    // }
 
         for (const roomMember of allRoomMembership) {
-            console.log("Hello", roomMember)
             const count = await tx.roomMember.count({
                 where: {
                     roomId: roomMember.roomId,
@@ -39,7 +38,7 @@
                 }
             })
             if(count === 0) {
-                await tx.message.deleteMany({ where: {roomMemberId: roomMember.roomId }})
+                await tx.message.deleteMany({ where: { roomMember: { roomId: roomMember.roomId } } })
                 await tx.roomMember.deleteMany({ where: {roomId: roomMember.roomId}})
                 await tx.room.delete({ where: {id: roomMember.roomId}})
                 continue
@@ -76,7 +75,7 @@
                         role: "ADMIN"
                     }
                 })
-            }
+            
             const updateMe = await tx.roomMember.update({
                 where: {
                     // roomId_userId: { roomId: roomMember.roomId, userId: roomMember.userId }
@@ -87,7 +86,16 @@
                     role: "MEMBER"
                 }
             })
-            
+        } else {
+            await tx.roomMember.update({
+                where: {
+                    id: roomMember.id
+                },
+                data: {
+                    leftAt: new Date()
+                }
+            })
+        }
         }
         await tx.refreshToken.deleteMany({
             where: {
