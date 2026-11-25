@@ -1,21 +1,8 @@
-import { use } from "react"
 import { prisma } from "../../db/dbConnect.js"
 import { RoomMembership } from "../../services/accessServices/roomMembership.js"
 import ApiError from "../../utils/apiError.util.js"
 
 const roomMemberCheck = new RoomMembership(prisma)
-// export const roomHandler = async (payload, ack) => {
-//     const roomId = parseInt(payload.roomId)
-//     if(!roomId) return (new Error("Room id is missin!"))
-
-//     try {
-//         const isRoomMember = await roomMemberCheck.execute(roomId, socket.user.id)
-//         if(isRoomMember === null) throw new Error(404, "Not A Room Member")
-//         socket.join(`room:${roomId}`)
-//     } catch(err) {
-//         throw new Error(err)
-//     }
-// }
 
 export const registerRoomHandlers = (io, socket) => {
     socket.on("joinRoom", async (payload, ack) => {
@@ -23,9 +10,7 @@ export const registerRoomHandlers = (io, socket) => {
             const roomId = parseInt(payload?.roomId)
             if (Number.isNaN(roomId)) throw new ApiError(400, "room Id is missing!")
             const userId = socket.user.id
-            console.log("UserId: ", userId)
             const membership = await roomMemberCheck.execute(userId, roomId)
-            // console.log(membership)
             if (membership === null) throw new ApiError(403, "You are not a member of this room!")
 
             socket.join(`room:${roomId}`)

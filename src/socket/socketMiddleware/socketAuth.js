@@ -5,7 +5,6 @@ export const socketAuth = (socket, next) => {
     
     try {
         const payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
-        console.log(payload)
         socket.user = {id: payload.id}
         next()
     } catch(err) {

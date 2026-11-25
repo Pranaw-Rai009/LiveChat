@@ -45,7 +45,7 @@ export const registerMessageHandlers = (io, socket) => {
             const membership = await roomMembershipCheck.execute(socket.user.id, roomId)
             if (!membership) throw new ApiError(403, "You are not a member of this room!")
 
-            const message = await saveMessage.execute(content, membership.id)   // match your signature
+            const message = await saveMessage.execute(content, membership.id)
             console.log(message)
             io.to(`room:${roomId}`).emit("newMessage", message)
             ack?.({ success: true })
