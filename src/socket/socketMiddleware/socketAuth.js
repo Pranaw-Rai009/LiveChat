@@ -8,6 +8,6 @@ export const socketAuth = (socket, next) => {
         socket.user = {id: payload.id}
         next()
     } catch(err) {
-        next(new Error ("Invalid or expired token"))
+        next(new Error (401, "Invalid or expired token"))
     }
 }

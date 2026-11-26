@@ -4,7 +4,6 @@ import { UpdateMemberToAdmin } from "../roomMemberServices/updateMemberToAdmin.j
 import { RoomAdminCheck } from "../accessServices/isRoomAdmin.js";
 import { RoomMemberCheck } from "../accessServices/isRoomMember.js";
 import { RoomExist } from "../../services/roomServices/roomExist.js"
-import { useId } from "react";
 
 export class UpdateRoomAdmin {
     constructor(prisma) {
