@@ -13,7 +13,8 @@ export class FetchJoinedRooms {
                 room: true,
                 id: true,
                 roomId: true,
-                userId: true
+                userId: true,
+                role: true
             },
         })
         // if(joinedRooms.length === 0) return null

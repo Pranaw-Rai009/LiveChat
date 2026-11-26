@@ -61,8 +61,10 @@ export const fetchMyRoomsController = asyncHandler(async (req, res) => {
         profilePic: membership.room.profilePic,
         adminId: membership.room.adminId,
         membership_data: {
+            id: membership.id,
+            role: membership.role,
             memberId: membership.id,
-            userId: membership.userId
+            userId: membership.userId,
         }
         }))
         res.status(200).json({JoinedRooms: joinedRooms})
