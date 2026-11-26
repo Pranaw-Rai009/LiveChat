@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Group chat</title>
+<style>
+  :root { --bg:#f4f5f7; --panel:#fff; --text:#16181d; --muted:#6b7280; --line:#e2e5ea; --accent:#0f766e; --mine:#d7f0ec; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#12151a; --panel:#1a1e25; --text:#e8eaee; --muted:#8b93a1; --line:#2a303a; --accent:#2dd4bf; --mine:#16403b; }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { font: 15px/1.45 system-ui, sans-serif; background: var(--bg); color: var(--text); }
+  input, button { font: inherit; color: inherit; }
+  input { background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; width: 100%; }
+  button { background: var(--accent); color: #fff; border: 0; border-radius: 6px; padding: 8px 12px; cursor: pointer; }
+  button.ghost { background: transparent; color: var(--accent); border: 1px solid var(--line); }
+  button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .hidden { display: none !important; }
+  .err { color: #dc2626; min-height: 1.4em; margin: 8px 0 0; font-size: 14px; }
+
+  #auth { height: 100%; display: grid; place-items: center; padding: 16px; }
+  #auth form { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 24px; width: 100%; max-width: 340px; display: grid; gap: 10px; }
+  #auth h1 { margin: 0 0 4px; font-size: 20px; }
+
+  #app { height: 100%; display: grid; grid-template-columns: 280px 1fr; }
+  aside { background: var(--panel); border-right: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; }
+  aside header { padding: 12px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  #status { color: var(--muted); font-size: 13px; }
+  .side-scroll { overflow-y: auto; flex: 1; padding: 8px; }
+  .side-scroll h2 { font-size: 13px; color: var(--muted); font-weight: 600; margin: 12px 6px 6px; }
+  .room { display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%; text-align: left; background: transparent; color: var(--text); padding: 8px; border-radius: 6px; }
+  .room:hover { background: var(--bg); }
+  .room.active { background: var(--mine); }
+  .room .join { color: var(--accent); font-size: 13px; }
+  #newRoom { display: flex; gap: 6px; padding: 8px; border-top: 1px solid var(--line); }
+
+  main { display: flex; flex-direction: column; min-height: 0; }
+  #roomTitle { padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--panel); font-weight: 600; }
+  #messages { flex: 1; overflow-y: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
+  #older { align-self: center; }
+  .empty { margin: auto; color: var(--muted); }
+  .msg { max-width: min(70ch, 80%); background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; overflow-wrap: anywhere; }
+  .msg.mine { align-self: flex-end; background: var(--mine); }
+  .msg .meta { font-size: 12px; color: var(--muted); }
+  #composer { display: flex; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--line); background: var(--panel); }
+
+  @media (max-width: 640px) {
+    #app { grid-template-columns: 1fr; grid-template-rows: 40% 1fr; }
+    aside { border-right: 0; border-bottom: 1px solid var(--line); }
+  }
+</style>
+</head>
+<body>
+
+<section id="auth" class="hidden">
+  <form id="authForm">
+    <h1 id="authTitle">Log in</h1>
+    <input id="userName" placeholder="Username" autocomplete="username" class="hidden">
+    <input id="email" type="email" placeholder="Email" autocomplete="email" required>
+    <input id="password" type="password" placeholder="Password (12+ characters)" autocomplete="current-password" required>
+    <button type="submit" id="authSubmit">Log in</button>
+    <button type="button" class="ghost" id="authToggle">Create an account</button>
+    <p class="err" id="authErr"></p>
+  </form>
+</section>
+
+<section id="app" class="hidden">
+  <aside>
+    <header>
+      <span id="status">connecting…</span>
+      <button class="ghost" id="logout">Log out</button>
+    </header>
+    <div class="side-scroll">
+      <h2>Your rooms</h2>
+      <div id="myRooms"></div>
+      <h2>Other rooms</h2>
+      <div id="otherRooms"></div>
+    </div>
+    <form id="newRoom">
+      <input id="newRoomName" placeholder="New room name" required>
+      <button type="submit">Create</button>
+    </form>
+  </aside>
+  <main>
+    <div id="roomTitle">Pick a room</div>
+    <div id="messages"><p class="empty">Select a room to start chatting.</p></div>
+    <form id="composer" class="hidden">
+      <input id="msgInput" placeholder="Type a message" autocomplete="off" required>
+      <button type="submit">Send</button>
+    </form>
+  </main>
+</section>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const API = "/api"
+const $ = (id) => document.getElementById(id)
+
+let accessToken = null, myId = null, socket = null
+let currentRoom = null, cursor = null, hasMore = false
+let seen = new Set(), reconnecting = false
+
+// If your authAccess middleware reads the token differently, change it here.
+const authHeader = () => ({ Authorization: `Bearer ${accessToken}` })
+
+/* ---------- api helpers ---------- */
+async function api(path, { method = "GET", body, auth = true } = {}, retry = true) {
+  const res = await fetch(API + path, {
+    method,
+    credentials: "include",
+    headers: { "Content-Type": "application/json", ...(auth && accessToken ? authHeader() : {}) },
+    body: body ? JSON.stringify(body) : undefined
+  })
+  if (res.status === 401 && auth && retry && await refresh()) return api(path, { method, body, auth }, false)
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(data.message || `Request failed (${res.status})`)
+  return data
+}
+
+async function refresh() {
+  try {
+    const res = await fetch(API + "/session/refreshAccToken", { method: "POST", credentials: "include" })
+    if (!res.ok) return false
+    setToken((await res.json()).AccessToken)
+    return true
+  } catch { return false }
+}
+
+function setToken(t) {
+  accessToken = t
+  myId = JSON.parse(atob(t.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))).id
+  if (socket) socket.auth.token = t
+}
+
+/* ---------- auth screen ---------- */
+let registering = false
+function setMode(reg) {
+  registering = reg
+  $("authTitle").textContent = reg ? "Create account" : "Log in"
+  $("authSubmit").textContent = reg ? "Create account" : "Log in"
+  $("authToggle").textContent = reg ? "I already have an account" : "Create an account"
+  $("userName").classList.toggle("hidden", !reg)
+  $("userName").required = reg
+  $("authErr").textContent = ""
+}
+$("authToggle").onclick = () => setMode(!registering)
+
+$("authForm").onsubmit = async (e) => {
+  e.preventDefault()
+  $("authErr").textContent = ""
+  const email = $("email").value.trim(), password = $("password").value
+  try {
+    if (registering) await api("/user/register", { method: "POST", auth: false, body: { userName: $("userName").value.trim(), email, password } })
+    const data = await api("/session/login", { method: "POST", auth: false, body: { email, password } })
+    setToken(data.AccessToken)
+    $("password").value = ""
+    startApp()
+  } catch (err) { $("authErr").textContent = err.message }
+}
+
+function showAuth() {
+  if (socket) socket.disconnect()
+  accessToken = null; currentRoom = null
+  $("app").classList.add("hidden")
+  $("auth").classList.remove("hidden")
+  setMode(false)
+}
+
+/* ---------- socket ---------- */
+function setStatus(t) { $("status").textContent = t }
+
+function connectSocket() {
+  if (socket) socket.disconnect()
+  socket = io({ auth: { token: accessToken } })
+  socket.on("connect", () => {
+    setStatus("online")
+    if (currentRoom) joinSocketRoom(currentRoom.id)   // new socket = no rooms, so re-join
+  })
+  socket.on("disconnect", () => setStatus("offline"))
+  socket.on("connect_error", async (err) => {
+    setStatus("connection error")
+    if (!/token/i.test(err.message) || reconnecting) return
+    reconnecting = true
+    if (await refresh()) socket.connect(); else showAuth()
+    setTimeout(() => (reconnecting = false), 3000)
+  })
+  socket.on("newMessage", onNewMessage)
+}
+
+function joinSocketRoom(roomId) {
+  socket.emit("joinRoom", { roomId }, (res) => { if (res && !res.success) setStatus(res.message) })
+}
+
+/* ---------- rooms ---------- */
+async function loadRooms() {
+  let mine = [], all = []
+  try { mine = (await api("/roomMember/room")).JoinedRooms || [] } catch {}
+  try { all = (await api("/room/fetch/rooms")).allRooms || [] } catch {}
+  const mineIds = new Set(mine.map((r) => r.id))
+
+  const myBox = $("myRooms"), otherBox = $("otherRooms")
+  myBox.replaceChildren(); otherBox.replaceChildren()
+
+  if (!mine.length) myBox.append(note("No rooms yet. Create one below."))
+  mine.forEach((r) => {
+    const b = document.createElement("button")
+    b.className = "room" + (currentRoom?.id === r.id ? " active" : "")
+    b.textContent = r.name
+    b.onclick = () => openRoom(r)
+    myBox.append(b)
+  })
+
+  const others = all.filter((r) => !mineIds.has(r.id))
+  if (!others.length) otherBox.append(note("Nothing else to join."))
+  others.forEach((r) => {
+    const b = document.createElement("button")
+    b.className = "room"
+    const name = document.createElement("span"); name.textContent = r.name
+    const j = document.createElement("span"); j.className = "join"; j.textContent = "Join"
+    b.append(name, j)
+    b.onclick = async () => {
+      try { await api(`/roomMember/join/${r.id}`, { method: "POST" }); await loadRooms() }
+      catch (err) { setStatus(err.message) }
+    }
+    otherBox.append(b)
+  })
+}
+
+function note(t) { const p = document.createElement("p"); p.className = "empty"; p.style.margin = "6px"; p.textContent = t; return p }
+
+$("newRoom").onsubmit = async (e) => {
+  e.preventDefault()
+  try {
+    await api("/room/create", { method: "POST", body: { name: $("newRoomName").value.trim() } })
+    $("newRoomName").value = ""
+    await loadRooms()
+  } catch (err) { setStatus(err.message) }
+}
+
+/* ---------- messages ---------- */
+async function openRoom(room) {
+  currentRoom = room
+  cursor = null; hasMore = false; seen = new Set()
+  $("roomTitle").textContent = room.name
+  $("composer").classList.remove("hidden")
+  $("messages").replaceChildren()
+  joinSocketRoom(room.id)
+  await loadMessages(false)
+  loadRooms()   // refresh active highlight
+  $("msgInput").focus()
+}
+
+async function loadMessages(older) {
+  const box = $("messages")
+  const q = new URLSearchParams({ limit: 30 })
+  if (older && cursor) q.set("before", cursor)
+  let d
+  try { d = await api(`/message/${currentRoom.id}/message?${q}`) }
+  catch (err) { setStatus(err.message); return }
+
+  cursor = d.nextbefore ?? null
+  hasMore = !!d.hasMore
+  const batch = (d.data || []).slice().reverse().filter((m) => !seen.has(m.id))   // API is newest-first
+
+  const prevHeight = box.scrollHeight
+  const frag = document.createDocumentFragment()
+  batch.forEach((m) => { seen.add(m.id); frag.append(msgEl(norm(m))) })
+  box.querySelector("#older")?.remove()
+
+  if (older) box.prepend(frag); else box.append(frag)
+  if (hasMore) {
+    const b = document.createElement("button")
+    b.id = "older"; b.className = "ghost"; b.textContent = "Load older messages"
+    b.onclick = () => loadMessages(true)
+    box.prepend(b)
+  } else if (!box.querySelector(".msg")) {
+    box.append(note("No messages yet. Say hi."))
+  }
+  if (older) box.scrollTop = box.scrollHeight - prevHeight; else box.scrollTop = box.scrollHeight
+}
+
+// Accepts the REST shape and (defensively) a nested shape for socket payloads.
+function norm(m) {
+  const u = m.roomMember?.user || m.user || {}
+  return {
+    id: m.id,
+    roomId: m.roomId ?? m.roomMember?.roomId,
+    content: m.content ?? m.message ?? "",
+    userId: m.userId ?? u.id,
+    userName: m.userName ?? u.userName ?? "unknown",
+    createdAt: m.createdAt
+  }
+}
+
+function msgEl(m) {
+  const d = document.createElement("div")
+  d.className = "msg" + (m.userId === myId ? " mine" : "")
+  const meta = document.createElement("div")
+  meta.className = "meta"
+  const t = m.createdAt ? new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""
+  meta.textContent = `${m.userId === myId ? "You" : m.userName}  ${t}`
+  const body = document.createElement("div")
+  body.textContent = m.content
+  d.append(meta, body)
+  return d
+}
+
+function onNewMessage(raw) {
+  if (!currentRoom) return
+  const m = norm(raw)
+  if (m.roomId && m.roomId !== currentRoom.id) return
+  if (m.id != null && seen.has(m.id)) return
+  if (m.id != null) seen.add(m.id)
+  const box = $("messages")
+  const nearBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 120
+  box.querySelector(".empty")?.remove()
+  box.append(msgEl(m))
+  if (nearBottom || m.userId === myId) box.scrollTop = box.scrollHeight
+}
+
+$("composer").onsubmit = (e) => {
+  e.preventDefault()
+  const content = $("msgInput").value.trim()
+  if (!content || !currentRoom) return
+  socket.emit("sendMessage", { roomId: currentRoom.id, content }, (res) => {
+    if (res && res.success === false) setStatus(res.message)
+  })
+  $("msgInput").value = ""
+}
+
+/* ---------- logout + boot ---------- */
+$("logout").onclick = async () => {
+  try { await api("/session/logout", { method: "POST" }) } catch {}
+  showAuth()
+}
+
+function startApp() {
+  $("auth").classList.add("hidden")
+  $("app").classList.remove("hidden")
+  connectSocket()
+  loadRooms()
+}
+
+;(async () => {
+  if (await refresh()) startApp(); else showAuth()
+})()
+</script>
+</body>
+</html>
