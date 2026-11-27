@@ -24,7 +24,7 @@ app.use(express.json({ limit: "16kb" }))
 // app.use(express.json({static: "public"}))
 
 // testing routes
-// app.get("/health", (req, res) => res.json({ status: "ok" }))
+app.get("/health", (req, res) => res.json({ status: "ok" }))
 
 
 // Main Routes
